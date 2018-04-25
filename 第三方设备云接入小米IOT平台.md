@@ -83,14 +83,14 @@
       "intent": "get-properties",
       "properties": [
           {
-          	"did": "AAAA",
-          	"siid": 2,
-          	"piid": 2
-  		},
+              "did": "AAAA",
+              "siid": 2,
+              "piid": 2
+          },
           {
-          	"did": "AAAA",
-          	"siid": 2,
-          	"piid": 4
+              "did": "AAAA",
+              "siid": 2,
+              "piid": 4
           }
       ]
   }
@@ -117,16 +117,16 @@
       "properties": [
           {
               "did": "AAAA",
-          	"siid": 2,
-          	"piid": 2,
+              "siid": 2,
+              "piid": 2,
               "status": -1,
               "description": "device not found"
           },
           {
               "did": "AAAA",
-          	"siid": 2,
-          	"piid": 4,
-          	"status": 0,
+              "siid": 2,
+              "piid": 4,
+              "status": 0,
               "value": "3000"
           }
       ]
@@ -223,7 +223,7 @@
       "requestId": "xxxx",
       "intent": "invoke-action",
       "action": {
-  		"did": "AAAB",
+          "did": "AAAB",
           "siid": 1,
           "aiid": 2,
           "in": [17, "ShangHai"]
@@ -249,7 +249,7 @@
       "requestId": "xxxx",
       "intent": "invoke-action",
       "action": {
-  		"did": "AAAB",
+          "did": "AAAB",
           "siid": 1,
           "aiid": 2,
           "out": [19, "Beijing"]
@@ -274,7 +274,7 @@
       "requestId": "xxxx",
       "intent": "invoke-action",
       "action": {
-  		"did": "AAAB",
+          "did": "AAAB",
           "siid": 1,
           "aiid": 2,
           "status": -5,
@@ -578,7 +578,7 @@ ContentType: applicaiton/json
 Content-Length: 232
 
 {
-    “code”: -1,
+    "code": -1,
     "description": "xxxx"
 }
 ```
