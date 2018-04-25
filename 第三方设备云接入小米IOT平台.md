@@ -1,9 +1,5 @@
 # 第三方设备云接入小米IOT平台
 
-ouyangchengfeng@xiaomi.com
-
-Tags： MIOT协议规范
-
 ---
 
 ## 一、流程
