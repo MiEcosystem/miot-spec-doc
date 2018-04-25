@@ -552,7 +552,7 @@ ContentType: applicaiton/json
 Content-Length: 123
 
 {
-    "code": -101，
+    "code": -101,
     "description": "xxxx"
 }
 ```
