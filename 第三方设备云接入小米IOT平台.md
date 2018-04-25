@@ -161,16 +161,16 @@ Tags： MIOT协议规范
       "intent": "set-properties",
       "properties": [
           {
-              "did": "AAAA",
-          	"siid": 2,
-          	"piid": 2,
-              "value": 34
+               "did": "AAAA",
+               "siid": 2,
+               "piid": 2,
+               "value": 34
           },
           {
-              "did": "AAAA",
-          	"siid": 2,
-          	"piid": 4,
-              "value": 2700
+               "did": "AAAA",
+               "siid": 2,
+               "piid": 4,
+               "value": 2700
           }
       ]
   }
@@ -189,14 +189,14 @@ Tags： MIOT协议规范
       "properties": [
           {
               "did": "AAAA",
-          	"siid": 2,
-          	"piid": 2,
+              "siid": 2,
+              "piid": 2,
               "status": 0
           },
           {
               "did": "AAAA",
-          	"siid": 2,
-          	"piid": 4,
+              "siid": 2,
+              "piid": 4,
               "status": -1,
               "description": "value out of range"
           }
@@ -308,17 +308,17 @@ Tags： MIOT协议规范
       "requestId": "xxxx",
       "intent": "subscribe",
       "devices": [
-      	{
-            	"did": "AAAA", // 第三方设备ID
-  			"subscriptionId": "abcdefg" // 订阅ID，第三方自己存起来，推送消息需要用到
-      	},
-      	{
-            	"did": "AAAA",
-  			"subscriptionId": "123456" // 订阅ID，第三方自己存起来，推送消息需要用到
-      	},
-  		{
-            	"did": "AAAB",
-  			"subscriptionId": "abc123" // 订阅ID，第三方自己存起来，推送消息需要用到
+        {
+          "did": "AAAA", // 第三方设备ID
+          "subscriptionId": "abcdefg" // 订阅ID，第三方自己存起来，推送消息需要用到
+        },
+        {
+          "did": "AAAA",
+          "subscriptionId": "123456" // 订阅ID，第三方自己存起来，推送消息需要用到
+        },
+        {
+          "did": "AAAB",
+          "subscriptionId": "abc123" // 订阅ID，第三方自己存起来，推送消息需要用到
       	}
       ]
   }
@@ -336,21 +336,21 @@ Tags： MIOT协议规范
       "intent": "subscribe",
       "devices": [
       	{
-            	"did": "AAAA",
-  			"subscriptionId": "abcdefg",
-              "status": 0
-      	},
-      	{
-            	"did": "AAAA",
-  			"subscriptionId": "123456",
-  			"status": 0
-      	},
-  		{
-            	"did": "AAAB",
-  			"subscriptionId": "abc123",
-              "status": -1, 					// 第三方校验时发现此设备不存在，DID是错的。
-              "description": "invalid device id"
-      	}
+          "did": "AAAA",
+          "subscriptionId": "abcdefg",
+          "status": 0
+        },
+        {
+          "did": "AAAA",
+          "subscriptionId": "123456",
+          "status": 0
+        },
+        {
+          "did": "AAAB",
+          "subscriptionId": "abc123",
+          "status": -1, 					// 第三方校验时发现此设备不存在，DID是错的。
+          "description": "invalid device id"
+        }
       ]
   }
   ```
@@ -369,14 +369,14 @@ Tags： MIOT协议规范
       "requestId": "xxxx",
       "intent": "unsubscribe",
       "devices": [
-      	{
-            	"did": "AAAA",
-  			"subscriptionId": "zzzz"
+        {
+          "did": "AAAA",
+          "subscriptionId": "zzzz"
       	},
       	{
-            	"did": "AAAA",
-  			"subscriptionId": "123456"
-      	}
+          "did": "AAAA",
+          "subscriptionId": "123456"
+        }
       ]
   }
   ```
@@ -393,16 +393,16 @@ Tags： MIOT协议规范
       "intent": "unsubscribe",
       "devices": [
       	{
-            	"did": "AAAA",
-  			"subscriptionId": "zzzz",
-              "status": 16,
-              "description": "invalid subscriptionId"
+          "did": "AAAA",
+          "subscriptionId": "zzzz",
+          "status": 16,
+          "description": "invalid subscriptionId"
       	},
-      	{
-            	"did": "AAAA",
-  			"subscriptionId": "123456",
-  			"status": 0
-      	}
+        {
+          "did": "AAAA",
+          "subscriptionId": "123456",
+          "status": 0
+        }
       ]
   }
   ```
@@ -439,14 +439,14 @@ Tags： MIOT协议规范
       "intent": "get-device-status",
       "devices": [
           {
-              "did": "AAAA",
-          	"online": true, 	// 在线与否，此字段必须有！
-          	"name": "小白"	   // 设备名字，此字段必须有！
+            "did": "AAAA",
+            "online": true, 	// 在线与否，此字段必须有！
+            "name": "小白"	   // 设备名字，此字段必须有！
           },
           {
-              "did": "AAAB,
-              "status": -1, 		// 错误的DID，必须返回。
-              "description": "invalid device Id"
+            "did": "AAAB",
+            "status": -1,   // 错误的DID，必须返回。
+            "description": "invalid device Id"
           }
       ]
   }
@@ -470,18 +470,18 @@ Tags： MIOT协议规范
         "requestId": "xxxx", // 第三方自己填写，建议每个请求都不一样
         "topic": "device-status-changed", // 设备状态发生变化
         "devices": [
-        	{
-        		"did": "AAAA",
-    			"subscriptionId": "abcdefg" // 必须和订阅时的ID一样
-        	},
-        	{
-        		"did": "AAAA",
-    			"subscriptionId": "654321" // 必须和订阅时的ID一样
-        	},
-        	{
-        		"did": "AAAB",
-    			"subscriptionId": "abc123" // 必须和订阅时的ID一样
-    		}
+          {
+            "did": "AAAA",
+            "subscriptionId": "abcdefg" // 必须和订阅时的ID一样
+          },
+          {
+            "did": "AAAA",
+            "subscriptionId": "654321" // 必须和订阅时的ID一样
+          },
+          {
+            "did": "AAAB",
+            "subscriptionId": "abc123" // 必须和订阅时的ID一样
+          }
         ]
     }
     ```
@@ -497,18 +497,18 @@ Tags： MIOT协议规范
         "requestId": "xxxx", // 第三方自己填写，建议每个请求都不一样
         "topic": "device-properties-changed", // 设备属性发生变化
         "devices": [
-        	{
-        		"did": "AAAA",
-    			"subscriptionId": "abcdefg" // 必须和订阅时的ID一样
-        	},
-        	{
-        		"did": "AAAA",
-    			"subscriptionId": "654321" // 必须和订阅时的ID一样
-        	},
-        	{
-        		"did": "AAAB",
-    			"subscriptionId": "abc123" // 必须和订阅时的ID一样
-    		}
+          {
+            "did": "AAAA",
+            "subscriptionId": "abcdefg" // 必须和订阅时的ID一样
+          },
+          {
+            "did": "AAAA",
+            "subscriptionId": "654321" // 必须和订阅时的ID一样
+          },
+          {
+            "did": "AAAB",
+            "subscriptionId": "abc123" // 必须和订阅时的ID一样
+          }
         ]
     }
     ```
@@ -521,19 +521,19 @@ Tags： MIOT协议规范
     Content-Length: 342
 
     {
-    	"requestId": "xxxx", // 与请求中的值保持一致，方便第三方调试。
+        "requestId": "xxxx", // 与请求中的值保持一致，方便第三方调试。
         "devices": [
-        	{
-        		"did": "AAAA",
+            {
+                "did": "AAAA",
                 "subscriptionId": "abcdefg",
-    			"status": 0
-        	},
-        	{
-        		"did": "AAAA",
+               "status": 0
+            },
+            {
+                "did": "AAAA",
                 "subscriptionId": "654321",
-    			"status": -16,								// 错误的订阅ID
-    			"description": "invalid subscriptionId"
-        	}
+                "status": -16,	// 错误的订阅ID
+                "description": "invalid subscriptionId"
+            }
         ]
     }
     ```
