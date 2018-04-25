@@ -306,15 +306,15 @@
       "devices": [
         {
           "did": "AAAA", // 第三方设备ID
-          "subscriptionId": "abcdefg" // 订阅ID，第三方自己存起来，推送消息需要用到
+          "subscriptionId": "abcdefg" // 订阅ID，第三方存起来，推送消息需要用到
         },
         {
           "did": "AAAA",
-          "subscriptionId": "123456" // 订阅ID，第三方自己存起来，推送消息需要用到
+          "subscriptionId": "123456"
         },
         {
           "did": "AAAB",
-          "subscriptionId": "abc123" // 订阅ID，第三方自己存起来，推送消息需要用到
+          "subscriptionId": "abc123"
       	}
       ]
   }
@@ -344,7 +344,7 @@
         {
           "did": "AAAB",
           "subscriptionId": "abc123",
-          "status": -1, 					// 第三方校验时发现此设备不存在，DID是错的。
+          "status": -1, // 第三方校验时发现此设备不存在，DID是错的。
           "description": "invalid device id"
         }
       ]
@@ -436,12 +436,12 @@
       "devices": [
           {
             "did": "AAAA",
-            "online": true, 	// 在线与否，此字段必须有！
-            "name": "小白"	   // 设备名字，此字段必须有！
+            "online": true, 	// 在线与否！
+            "name": "小白"	   // 设备名字
           },
           {
             "did": "AAAB",
-            "status": -1,   // 错误的DID，必须返回。
+            "status": -1,  // 错误的DID，必须返回。
             "description": "invalid device Id"
           }
       ]
@@ -472,11 +472,11 @@
           },
           {
             "did": "AAAA",
-            "subscriptionId": "654321" // 必须和订阅时的ID一样
+            "subscriptionId": "654321"
           },
           {
             "did": "AAAB",
-            "subscriptionId": "abc123" // 必须和订阅时的ID一样
+            "subscriptionId": "abc123"
           }
         ]
     }
@@ -499,11 +499,11 @@
           },
           {
             "did": "AAAA",
-            "subscriptionId": "654321" // 必须和订阅时的ID一样
+            "subscriptionId": "654321"
           },
           {
             "did": "AAAB",
-            "subscriptionId": "abc123" // 必须和订阅时的ID一样
+            "subscriptionId": "abc123"
           }
         ]
     }
@@ -522,7 +522,7 @@
             {
                 "did": "AAAA",
                 "subscriptionId": "abcdefg",
-               "status": 0
+                "status": 0
             },
             {
                 "did": "AAAA",
@@ -552,7 +552,7 @@ ContentType: applicaiton/json
 Content-Length: 123
 
 {
-	"code": -101，
+    "code": -101，
     "description": "xxxx"
 }
 ```
@@ -578,7 +578,7 @@ ContentType: applicaiton/json
 Content-Length: 232
 
 {
-	“code”: -1,
+    “code”: -1,
     "description": "xxxx"
 }
 ```
