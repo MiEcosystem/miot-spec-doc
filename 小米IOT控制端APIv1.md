@@ -110,7 +110,7 @@
 2. 所有HTTP请求头均携带以下字段（下文的示例代码省略）
     ```
     App-Id: xxxxx        // 应用ID
-    Access-Token: xxxxx  // 设备控制Token, d-token 或者 Oauth Token
+    Access-Token: xxxxx  // 小米账号登录后的Oauth Token
     ```
 
     * App-Id
@@ -118,29 +118,6 @@
       在开放平台申请: https://open.home.mi.com
 
 
-    * Access-Token
-
-      支持以下两种Token:
-
-      * d-token
-
-        ```
-        由sessionId、controlToken拼接而成：
-        Access-Token ::= "d~"<sessionId>"~"<controlToken>
-        sessionId 和 controlToken 由设备端绑定用户ID之后获得。
-        比如：
-            sessonId = "2_9991_1496299901461";
-            controlToken = "x42h09jn15";
-            Access-Token = "d~" + sessonId + "~" + controlToken;
-        ```
-
-      * oauth-token
-
-        ```
-        小米账号Oauth2登录后的token
-        ```
-
-    ​
 
 
 ### 1. 基本API
@@ -285,16 +262,23 @@ Content-Length: 346
         {
             "pid": "AAAD.1.1",
             "value": "xiaomi",
-            "status": 0    // 读取成功
+            "status": 0
         },
         {
             "pid": "AAAD.2.3",
-            "status": -704001000,  // 读取错误，具体含义见状态码
+            "status": -704001000,
             "description": "xxxx"
         }
     ]
 }
 ```
+
+其中：
+
+* status是操作结果，0是成功，其他代表失败，具体含义见状态码。
+* description描述失败的原因。
+
+
 
 #### 1.4 Set Properties (设置属性)
 
@@ -305,9 +289,9 @@ Content-Type: application/json
 Content-Length: 658
 
 {
-    "voice": {                                  // 语音识别字段 [可选]
-        "recognition": "打开家里所有的灯泡",    // 语音识别文本
-        "semantics": "xxxxx",                   // 语义分析结果
+    "voice": {
+        "recognition": "打开家里所有的灯泡",
+        "semantics": "xxxxx",
     },
     "properties": [
         {
@@ -352,15 +336,17 @@ Content-Length: 346
     "properties": [
         {
             "pid": "AAAD.1.1",
-            "status": 0                 // 操作完成。
+            "status": 0
         },
         {
             "pid": "AAAC.1.1",
-            "status": 1                // 操作开始，未完成
+            "status": 1
         }
     ]
 }
 ```
+
+
 
 #### 1.5 Invoke Actions (调用方法)
 
@@ -484,13 +470,7 @@ Content-Length: 134
         "AAAC.1.1",
         "AAAD.1.1",
         "AAAD.1.2"
-    ],
-    "receiver": {
-        "type": "http"                          // 标准HTTP/POST推送
-        "url": "http://www.xxxx.com/event",     // 接收地址
-        "authorization": "xxxxx",               // 授权密钥，接收服务器用来鉴定消息是否合法。
-        "identifier": "xxxx"                    // 标识符, 标识此次订阅
-    }
+    ]
 }
 ```
 
@@ -536,12 +516,7 @@ Content-Length: 134
         "AAAB.1.1",
         "AAAC.1.2",
         "AAAD.1.1",
-    ],
-    "receiver": {
-        "type": "HTTP"                          // 标准HTTP/POST推送
-        "url": "http://www.xxxx.com/event",     // 接收地址
-        "authorization": "xxxxx",               // 授权密钥，接收服务器用来鉴定消息是否合法。
-    }
+    ]
 }
 ```
 
@@ -552,7 +527,7 @@ Content-Type: application/json
 Content-Length: 156
 
 {
-    "expired": 36000,    // 超时时间，单位为秒。
+    "expired": 36000,
     "events": [
         {
             "eid": "AAAB.1.1",
@@ -578,12 +553,7 @@ Content-Type: application/json
 Content-Length: 134
 
 {
-    "topic": "homes-changed",
-    "receiver": {
-        "type": "HTTP"                          // 标准HTTP/POST推送
-        "url": "http://www.xxxx.com/event",     // 接收地址
-        "authorization": "xxxxx",               // 授权密钥，接收服务器用来鉴定消息是否合法。
-    }
+    "topic": "homes-changed"
 }
 ```
 
@@ -594,7 +564,7 @@ Content-Type: application/json
 Content-Length: 156
 
 {
-    "expired": 36000,    // 超时时间，单位为秒。
+    "expired": 36000
 }
 ```
 ##### (4) 订阅设备相关事件  (暂不实现)
@@ -606,12 +576,7 @@ Content-Type: application/json
 Content-Length: 134
 
 {
-    "topic": "devices-changed",
-    "receiver": {
-        "type": "HTTP"                          // 标准HTTP/POST推送
-        "url": "http://www.xxxx.com/event",     // 接收地址
-        "authorization": "xxxxx",               // 授权密钥，接收服务器用来鉴定消息是否合法。
-    }
+    "topic": "devices-changed"
 }
 ```
 
@@ -622,7 +587,7 @@ Content-Type: application/json
 Content-Length: 156
 
 {
-    "expired": 36000,    // 超时时间，单位为秒。
+    "expired": 36000
 }
 ```
 
@@ -1328,9 +1293,9 @@ Content-Length: 346
     Content-Length: 658
 
     {
-        "voice": {                                  // [可选] 语音识别字段
-            "recognition": "关掉所有的设备",          // 语音识别文本
-            "semantics": "xxxxx",                   // 语义分析结果
+        "voice": {
+            "recognition": "关掉所有的设备",
+            "semantics": "xxxxx",
         },
         "properties": [
             {
@@ -1359,15 +1324,15 @@ Content-Length: 346
         "properties": [
             {
                 "pid": "AAAB.1.1",
-                "status": 0                 // 已关闭台灯
+                "status": 0
             },
             {
                 "pid": "AAAD.1.1",
-                "status": 0                 // 已关闭吊扇
+                "status": 0
             },
             {
                 "pid": "AAAE.1.1",
-                "status": 1                 // 已收到彩灯关闭请求，正在处理
+                "status": 1
             }
         ]
     }
@@ -1384,12 +1349,12 @@ Content-Length: 346
     Content-Length: 658
 
     {
-        "voice": {                                  // [可选] 语音识别字段
-            "recognition": "打开阳台上的灯",        // 语音识别文本
-            "semantics": "xxxxx",                   // 语义分析结果
+        "voice": {
+            "recognition": "打开阳台上的灯",
+            "semantics": "xxxxx",
         },
         "properties": [
-            {                                       // 灯.彩灯.开关服务.开关 = false     
+            {
                 "pid": "AAAE.1.1",
                 "value": true
             }
@@ -1407,7 +1372,7 @@ Content-Length: 346
         "properties": [
             {
                 "pid": "AAAE.1.1",
-                "status": 0                 // 灯已打开
+                "status": 0
             }
         ]
     }
