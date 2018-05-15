@@ -590,22 +590,24 @@ Content-Length: 232
 
 ## 五、状态码
 
-| 错误代码 | 描述                                  |
-| -------- | ------------------------------------- |
-| 0        | 成功                                  |
-| -1       | Device不存在                          |
-| -2       | Service不存在                         |
-| -3       | Property不存在                        |
-| -4       | Event不存在                           |
-| -5       | Action不存在                          |
-| -6       | 无效的ID (无效的PID、SID、AID、EID等) |
-| -7       | Property不可读                        |
-| -8       | Property不可写                        |
-| -9       | Property不可订阅                      |
-| -10      | Property值错误                        |
-| -11      | Action返回值错误                      |
-| -12      | Action执行错误                        |
-| -13      | Action参数个数不匹配                  |
-| -14      | Action参数错误                        |
-| -15      | 网络超时                              |
-| -16      | 无效的subscriptionId                  |
+| 错误代码 | 描述                                                    |
+| -------- | ------------------------------------------------------- |
+| 0        | 成功                                                    |
+| 1        | 设备接受到指令，但未执行完成。类似(HTTP/1.1 201 Accept) |
+| -1       | Device不存在                                            |
+| -2       | Service不存在                                           |
+| -3       | Property不存在                                          |
+| -4       | Event不存在                                             |
+| -5       | Action不存在                                            |
+| -6       | 无效的ID (无效的PID、SID、AID、EID等)                   |
+| -7       | Property不可读                                          |
+| -8       | Property不可写                                          |
+| -9       | Property不可订阅                                        |
+| -10      | Property值错误                                          |
+| -11      | Action返回值错误                                        |
+| -12      | Action执行错误                                          |
+| -13      | Action参数个数不匹配                                    |
+| -14      | Action参数错误                                          |
+| -15      | 网络超时                                                |
+| -16      | 无效的subscriptionId                                    |
+| -17      | 设备在当前状态下，不支持此操作                          |
