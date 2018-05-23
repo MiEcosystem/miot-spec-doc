@@ -1,0 +1,3 @@
+rootProject.name = 'xiot-provider'
+
+include 'action-on-miot-vertx'
