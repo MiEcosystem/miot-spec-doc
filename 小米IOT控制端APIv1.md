@@ -109,15 +109,26 @@
 
 2. 所有HTTP请求头均携带以下字段（下文的示例代码省略）
     ```
-    App-Id: xxxxx        // 应用ID
-    Access-Token: xxxxx  // 小米账号登录后的Oauth Token
+    App-Id: xxxxx
+    Access-Token: xxxxx
+    Spec-NS: xxxxx
     ```
 
     * App-Id
 
       在开放平台申请: https://open.home.mi.com
 
+    * Access-Token
 
+      小米账号登录后的Oauth Token
+
+    * Spec-NS
+
+      名字空间，必须是:
+
+      ```
+      miot-spec-v2
+      ```
 
 
 ### 1. 基本API
@@ -140,7 +151,7 @@ Content-Length: 421
         {
             "did": "AAAB",
             "online": true,
-            "type": "urn:miot-spec:device:lightbulb:00000001:yeelink",
+            "type": "urn:miot-spec-v2:device:lightbulb:00000001:yeelink",
             "category": "desk-lamp",
             "name": "小白",
             "rid": "1132323",
@@ -150,7 +161,7 @@ Content-Length: 421
         {
             "did": "AAAC",
             "online": true,
-            "type": "urn:miot-spec:device:air-monitor:00000009:chuangmi",
+            "type": "urn:miot-spec-v2:device:air-monitor:00000009:chuangmi",
             "category": "haze-monitor",
             "name": "小黑",
             "rid": "1132323",
@@ -160,7 +171,7 @@ Content-Length: 421
         {
             "did": "AAAD",
             "online": false,
-            "type": "urn:miot-spec:device:fan:00000001:lvmi",
+            "type": "urn:miot-spec-v2:device:fan:00000001:lvmi",
             "category": "ceiling-fan",
             "name": "转转",
             "rid": "1132323",
@@ -170,7 +181,7 @@ Content-Length: 421
         {
             "did": "AAAE",
             "online": true,
-            "type": "urn:miot-spec:device:lightbulb:00000001:yeelink",
+            "type": "urn:miot-spec-v2:device:lightbulb:00000001:yeelink",
             "category": "bed-lamp",
             "name": "圆圆",
             "rid": "1132323",
@@ -196,7 +207,7 @@ Content-Length: 421
     "devices": [
         {
             "did": "AAAB",
-            "type": "urn:miot-spec:device:lightbulb:00000001:yeelink",
+            "type": "urn:miot-spec-v2:device:lightbulb:00000001:yeelink",
             "name": "小白",
             "category": "lightbulb",
             "cloud_id": "10",
@@ -204,7 +215,7 @@ Content-Length: 421
         },
         {
             "did": "AAAC",
-            "type": "urn:miot-spec:device:air-monitor:00000009:chuangmi",
+            "type": "urn:miot-spec-v2:device:air-monitor:00000009:chuangmi",
             "name": "小黑",
             "category": "air-monitor",
             "cloud_id": "835",
@@ -275,7 +286,7 @@ Content-Length: 346
 
 其中：
 
-* status是操作结果，0是成功，其他代表失败，具体含义见状态码。
+* status是操作结果，0是成功，负值代表失败，具体含义见状态码。
 * description描述失败的原因。
 
 
@@ -438,607 +449,8 @@ Content-Length: 42
 
 ### 3. 事件API
 #### 3.1. Subscribe (订阅)
-
-* 订阅事件或属性时, 需要提供接收方信息:
-
-- [x] type
-    接收方类型, 目前只支持标准HTTP服务器和小米推送服务器
-    >* http
-    >* mipush
-
-- [x] url
-    接收方地址, 如果是http服务器必须提供此地址, 如果是小米推送, 则可以省略.
-
-- [x] authorization
-    授权码, 接收方用来验证消息是否合法.
-
-- [x] identifier
-    订阅标识, 由应用填写, 推送事件时, 将携带此标识字符串
-
-##### (1) 订阅属性变化
-
-* 开始订阅：
-```http
-POST /api/v1/subscriptions
-Content-Type: application/json
-Content-Length: 134
-
-{
-    "topic": "properties-changed",
-    "properties": [
-        "AAAB.1.1",
-        "AAAC.1.1",
-        "AAAD.1.1",
-        "AAAD.1.2"
-    ]
-}
-```
-
-* 订阅成功，应答如下：
-```http
-HTTP/1.1 207 Multi-Status
-Content-Type: application/json
-Content-Length: 156
-
-{
-    "expired": 36000,
-    "properties": [
-        {
-            "pid": "AAAB.1.1",
-            "status": 0
-        },
-        {
-            "pid": "AAAC.1.1",
-            "status": -704002023
-        },
-        {
-            "pid": "AAAD.1.1",
-            "status": 0
-        }
-        {
-            "pid": "AAAD.1.2",
-            "status": 705202023
-        }
-    ]
-}
-```
-##### (2) 订阅事件
-
-* 开始订阅：
-```http
-POST /api/v1/subscriptions
-Content-Type: application/json
-Content-Length: 134
-
-{
-    "topic": "event-occured",
-    "events": [
-        "AAAB.1.1",
-        "AAAC.1.2",
-        "AAAD.1.1",
-    ]
-}
-```
-
-* 订阅成功，应答如下：
-```http
-HTTP/1.1 207 Multi-Status
-Content-Type: application/json
-Content-Length: 156
-
-{
-    "expired": 36000,
-    "events": [
-        {
-            "eid": "AAAB.1.1",
-            "status": 0
-        },
-        {
-            "eid": "AAAD.1.2",
-            "status": 0
-        }
-        {
-            "eid": "AAAD.1.1",
-            "status": -705202023
-        }
-    ]
-}
-```
-##### (3) 订阅家庭相关事件  (暂不实现)
-
-* 开始订阅：
-```http
-POST /api/v1/subscriptions
-Content-Type: application/json
-Content-Length: 134
-
-{
-    "topic": "homes-changed"
-}
-```
-
-* 订阅成功，应答如下：
-```http
-HTTP/1.1 207 Multi-Status
-Content-Type: application/json
-Content-Length: 156
-
-{
-    "expired": 36000
-}
-```
-##### (4) 订阅设备相关事件  (暂不实现)
-
-* 开始订阅：
-```http
-POST /api/v1/subscriptions
-Content-Type: application/json
-Content-Length: 134
-
-{
-    "topic": "devices-changed"
-}
-```
-
-* 订阅成功，应答如下：
-```http
-HTTP/1.1 207 Multi-Status
-Content-Type: application/json
-Content-Length: 156
-
-{
-    "expired": 36000
-}
-```
-
 #### 3.2. Unsubscribe (取消订阅)
-
-##### (1) 取消订阅属性
-```http
-DELETE /api/v1/subscriptions
-Content-Type: application/json
-Content-Length: 134
-
-{
-    "topic": "properties-changed",
-    "properties": [
-        "AAAB.1.1",
-        "AAAC.1.1",
-        "AAAD.1.1",
-        "AAAD.1.2",
-    ]
-}
-```
-* 取消订阅成功，返回如下应答：
-```http
-HTTP/1.1 200 OK
-```
-* 或
-```http
-HTTP/1.1 207 Multi-Status
-Content-Type: application/json
-Content-Length: 156
-
-{
-    "properties": [
-        {
-            "pid": "AAAB.1.1",
-            "status": 0
-        },
-        {
-            "pid": "AAAC.1.1",
-            "status": -704002023
-        },
-        {
-            "pid": "AAAD.1.1",
-            "status": 0
-        }
-        {    
-            "pid": "AAAD.1.2",
-            "status": 705202023
-        }
-    ]
-}
-```
-
-##### (2) 取消订阅事件
-
-* 取消订阅：
-```http
-DELETE /api/v1/subscriptions
-Content-Type: application/json
-Content-Length: 134
-
-{
-    "topic": "event-occured",
-    "events": [
-        "AAAB.1.1",
-        "AAAC.1.2",
-        "AAAD.1.1",
-    ]
-}
-```
-* 取消订阅成功，返回如下应答：
-```http
-HTTP/1.1 200 OK
-```
-* 或
-```http
-HTTP/1.1 207 Multi-Status
-Content-Type: application/json
-Content-Length: 156
-
-{
-    "events": [
-        {
-            "eid": "AAAB.1.1",
-            "status": 0
-        },
-        {
-            "eid": "AAAC.1.2",
-            "status": 0
-        },
-        {
-            "eid": "AAAD.1.1",
-            "status": 0
-        }
-    ]
-}
-```
-
-##### (3) 取消订阅家庭相关事件 (暂不实现)
-```http
-DELETE /api/v1/subscriptions
-Content-Type: application/json
-Content-Length: 134
-
-{
-    "topic": "homes-changed",
-}
-```
-* 取消订阅成功，返回如下应答：
-```http
-HTTP/1.1 200 OK
-```
-
-##### (4) 取消订阅设备相关事件 (暂不实现)
-```http
-DELETE /api/v1/subscriptions
-Content-Type: application/json
-Content-Length: 134
-
-{
-    "topic": "devices-changed",
-}
-```
-
-* 取消订阅成功，返回如下应答：
-```http
-HTTP/1.1 200 OK
-```
-
 #### 3.3 Event (事件)
-
-| 序号 | 事件主题           | 描述                                                       | 备注     |
-| ---- | ------------------ | ---------------------------------------------------------- | -------- |
-| 0    | properties-changed | (设备描述中定义的)属性发生变化                             |          |
-| 1    | events-occured     | (设备描述中定义的)事件产生                                 | 暂不实现 |
-| 2    | devices-changed    | 设备发生变化（包括增加、删除设备，设备名称、种类被修改等） | 暂不实现 |
-| 3    | homes-changed      | 家庭发生变化                                               | 暂不实现 |
-
-##### (1) 属性发生变化
-
-```json
-{
-    "topic": "properties-changed",
-    "oid": "xxxxxxxxxxxxx",
-    "properties": [
-        {
-            "pid": "AAA1.3.4",
-            "value": 32,
-        },
-        {
-            "pid": "AAA1.3.3",
-            "value": true,
-        }
-    ]
-}
-```
-
-##### (2) 事件产生
-
-```json
-{
-    "topic": "events-occured",
-    "oid": "xxxxxxxxxxxxx",
-    "events": [
-        {
-            "eid": "AAA1.3.1",
-            "arguments": ["衣服洗完了", 50]
-        },
-        {
-            "eid": "AAA1.3.3",
-            "arguments": [344, "xxxx"]
-        }
-    ]
-}
-```
-
-##### (3) 设备相关事件
-
-包括：
-| 序号 | 内容                     | 描述             |
-| ---- | ------------------------ | ---------------- |
-| 0    | devices-added            | 新增设备         |
-| 1    | devices-removed          | 删除设备         |
-| 2    | devices-name-changed     | 设备名称发生变化 |
-| 3    | devices-category-changed | 设备种类发生变化 |
-| 4    | devices-location-changed | 设备位置发生变化 |
-
-###### 新增设备
-
-```json
-{
-    "topic": "devices-changed",
-    "oid": "xxxxxxxxxxxxx",
-    "devices-added": [
-        {
-            "did": "AAA1",
-            "type": "urn:miot-spec:device:lightbulb:00000001",
-            "category": "desk-lamp",
-            "name": "小灯泡",
-        },
-        {
-            "pid": "AAAA",
-            "did": "AAA2",
-            "type": "urn:miot-spec:device:lightbulb:00000001",
-            "category": "reading-lamp",
-            "name": "大灯泡",
-        }
-    ]
-}
-```
-
-###### 删除设备
-
-```json
-{
-    "topic": "devices-changed",
-    "oid": "xxxxxxxxxxxxx",
-    "devices-removed": ["AAA1", "AAA2"]
-}
-```
-
-###### 设备名称发生变化
-
-```json
-{
-    "topic": "devices-changed",
-    "oid": "xxxxxxxxxxxxx",
-    "devices-name-changed": [
-        {
-            "did": "AAA1",
-            "name": "灯泡"
-        },
-        {
-            "did": "AAA2",
-            "name": "吊扇"
-        }
-    ]
-}
-```
-
-###### 设备种类发生变化
-
-```json
-{
-    "topic": "devices-changed",
-    "oid": "xxxxxxxxxxxxx",
-    "devices-category-changed": [
-        {
-            "did": "AAA1",
-            "category": "ceiling-fan"
-        }
-    ]
-}
-```
-
-###### 设备位置发生变化
-
-```json
-{
-    "topic": "device-location-changed",
-    "oid": "xxxxxxxxxxxxx",
-    "device-location-changed": [
-        {
-            "did": "AAA1",
-            "rid": "12"
-        },
-        {
-            "did": "AAA2",
-            "rid": "13"
-        }
-    ]
-}
-```
-
-##### (4) 家庭相关事件
-
-包括：
-| 序号 | 内容              | 描述                   |
-| ---- | ----------------- | ---------------------- |
-| 1    | home-added        | 家被创建               |
-| 2    | home-removed      | 家被删除               |
-| 3    | home-name-changed | 家名称被修改           |
-| 4    | room-added        | 房间被创建             |
-| 5    | room-removed      | 房间被删除             |
-| 6    | room-name-changed | 房间名称被修改         |
-| 7    | zone-added        | 区被创建               |
-| 8    | zone-removed      | 区被删除               |
-| 9    | zone-name-changed | 区名称被修改           |
-| 10   | zone-changed      | 区包含的房间发生了变化 |
-
-###### 家被创建
-
-```json
-{
-    "topic": "homes-changed",
-    "oid": "xxxxxxxxxxxxx",
-    "homes-added": [
-        {
-            "iid": 4,
-            "name": "紫玉山庄"
-        },
-        {
-            "iid": 5,
-            "name": "金茂大厦"
-        },
-    ]
-}
-```
-
-###### 家被删除
-
-```json
-{
-    "topic": "home-changed",
-    "oid": "xxxxxxxxxxxxx",
-    "homes-removed": [4, 5]
-}
-```
-
-###### 家的名称被修改
-
-```json
-{
-    "topic": "homes-changed",
-    "oid": "xxxxxxxxxxxxx",
-    "homes-name-changed": [
-        {
-            "iid": 4,
-            "name": "紫玉山庄1号"
-        },
-        {
-            "iid": 5,
-            "name": "金茂国际"
-        },
-    ]
-}
-```
-
-###### 房间被创建
-
-```json
-{
-    "topic": "homes-changed",
-    "oid": "xxxxxxxxxxxxx",
-    "room-added": [
-        {
-            "rid": "11",
-            "name": "客厅"
-        },
-        {
-            "rid": "12",
-            "name": "主卧"
-        },
-    ]
-}
-```
-
-###### 房间被删除
-
-```json
-{
-    "topic": "homes-changed",
-    "oid": "xxxxxxxxxxxxx",
-    "room-removed": ["11", "12"]
-}
-```
-
-###### 房间名称被修改
-
-```json
-{
-    "topic": "homes-changed",
-    "oid": "xxxxxxxxxxxxx",
-    "room-name-changed": [
-        {
-            "rid": "11",
-            "name": "恬恬的房间"
-        },
-        {
-            "rid": "12",
-            "name": "朵朵的房间"
-        },
-    ]
-}
-```
-
-###### 区被创建
-```json
-{
-    "topic": "homes-changed",
-    "oid": "xxxxxxxxxxxxx",
-    "zone-added": [
-        {
-            "zid": "1.1",
-            "name": "一楼",
-            "rooms": [1, 2, 3, 4]
-        },
-        {
-            "zid": 1.2,
-            "name": "二楼",
-            "rooms": [5, 6, 7, 8]
-        },
-    ]
-}
-```
-
-###### 区被删除
-```json
-{
-    "topic": "homes-changed",
-    "oid": "xxxxxxxxxxxxx",
-    "zone-removed": ["1.1", "1.2"]
-}
-```
-
-###### 区名称被修改
-```json
-{
-    "topic": "homes-changed",
-    "oid": "xxxxxxxxxxxxx",
-    "zone-name-changed": [
-        {
-            "zid": "1.1",
-            "name": "三楼"
-        },
-        {
-            "zid": "1.2",
-            "name": "四楼"
-        },
-    ]
-}
-```
-
-###### 区包含的房间发生了变化
-```json
-{
-    "topic": "homes-changed",
-    "oid": "xxxxxxxxxxxxx",
-    "zone-changed": [
-        {
-            "zid": "1.1",
-            "rooms": [1, 2, 4]
-        },
-        {
-            "zid": "1.2",
-            "rooms": [5, 8]
-        },
-    ]
-}
-```
-
 
 ### 4. 家庭API
 
@@ -1215,7 +627,7 @@ Content-Length: 346
 
 2. 读取设备描述文档（type是设备类型）
     ```bash
-    curl -i http://miot-spec.org/instance/device?type=urn:miot-spec:device:fan:00000A04:zhimi
+    curl -i http://miot-spec.org/miot-spec-v2/instance?type=urn:miot-spec-v2:device:outlet:0000A002:lumi-v1:1
     ```
 
 3. 解析设备描述文档
@@ -1244,15 +656,15 @@ Content-Length: 346
             {
                 "name": "台灯",
                 "online": true,
-                "type": "urn:miot-spec:device:lightbulb:00000A03:generic",
-                "category": "lightbulb",
+                "type": "urn:miot-spec-v2:device:light:0000A001:philips-bulb:1",
+                "category": "light",
                 "rid": "11",
                 "did": "AAAB"
             },
             {
                 "name": "吊扇",
                 "online": true,
-                "type": "urn:miot-spec:device:fan:00000A04:zhimi",
+                "type": "urn:miot-spec-v2:device:fan:0000A005:zhimi-sa1:1",
                 "category": "fan",
                 "rid": "11",
                 "did": "AAAD"
@@ -1260,8 +672,8 @@ Content-Length: 346
             {
                 "name": "彩灯",
                 "online": true,
-                "type": "urn:miot-spec:device:lightbulb:00000A03:colorful",
-                "category": "lightbulb",
+                "type": "urn:miot-spec-v2:device:light:0000A001:philips-sread1:1",
+                "category": "light",
                 "rid": "11",
                 "did": "AAAE"
             }
@@ -1273,9 +685,9 @@ Content-Length: 346
 
     根据返回的设备列表中的"type"字段,读取设备描述文档:
 
-    >* https://miot-spec.org/instance/device?type=urn:miot-spec:device:lightbulb:00000A03:generic
-    >* https://miot-spec.org/instance/device?type=urn:miot-spec:device:fan:00000A04:zhimi
-    >* https://miot-spec.org/instance/device?type=urn:miot-spec:device:lightbulb:00000A03:colorful
+    >* http://miot-spec.org/miot-spec-v2/instance?type=urn:miot-spec-v2:device:light:0000A001:philips-bulb:1
+    >* http://miot-spec.org/miot-spec-v2/instance?type=urn:miot-spec-v2:device:fan:0000A005:zhimi-sa1:1
+    >* http://miot-spec.org/miot-spec-v2/instance?type=urn:miot-spec-v2:device:light:0000A001:philips-sread1:1
 
     注意: 由于设备描述文档不会再修改, 从网络上读取这些文档需要耗时, 建议控制端自己缓存此文档.
 
@@ -1296,15 +708,15 @@ Content-Length: 346
         },
         "properties": [
             {
-                "pid": "AAAB.1.1",
+                "pid": "AAAB.2.1",
                 "value": false
             },
             {
-                "pid": "AAAD.1.1",
+                "pid": "AAAD.2.1",
                 "value": false
             },
             {
-                "pid": "AAAE.1.1",
+                "pid": "AAAE.2.1",
                 "value": false
             }
         ]
@@ -1352,7 +764,7 @@ Content-Length: 346
         },
         "properties": [
             {
-                "pid": "AAAE.1.1",
+                "pid": "AAAE.2.1",
                 "value": true
             }
         ]
@@ -1368,7 +780,7 @@ Content-Length: 346
     {
         "properties": [
             {
-                "pid": "AAAE.1.1",
+                "pid": "AAAE.2.1",
                 "status": 0
             }
         ]

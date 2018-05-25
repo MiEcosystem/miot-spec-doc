@@ -1,13 +1,25 @@
-# 小米IOT协议规范（设备描述v1）
+# 小米IOT协议规范（设备描述v2）
 
 
 
 ---
 
-| 时间      | 修改者          | 描述             |
-| --------- | --------------- | ---------------- |
-| 2017.3.1  | ouyangchengfeng | 初始化文档       |
-| 2018.5.25 | ouyangchengfeng | 修改某些拼写错误 |
+| 时间     | 修改者          | 描述                       |
+| -------- | --------------- | -------------------------- |
+| 2018.3.1 | ouyangchengfeng | 在v1的基础上，初始化v2文档 |
+| 2018.3.6 | ouyangchengfeng | 增加章节：升级             |
+
+
+
+# 导读
+
+相对v1，v2版的格式没有变化，有几个改进：
+
+1. 所有type的名字空间升级为miot-spec-v2。
+2. 设备实例中的type增加一个字段：version。
+3. 增加新章节：《设备实例升级》
+4. 读取定义（规范定义 & 实例定义）时，只描述如何读取miot-spec-v2的定义。
+5. 在本文中，为了方便说明解释，有些type是虚构的，最终以miot-spec.org网站里的内容为准。
 
 
 
@@ -114,24 +126,24 @@
 
 ```json
 {
-    "type": "urn:miot-spec:device:fan:00000A04:zhimi-supper-1",
-    "description": "Zhimi Fan V1",
+    "type": "urn:miot-spec-v2:device:fan:0000A005:zhimi-sa1:1",
+    "description": "Zhimi Fan",
     "services": [
         {
             "iid": 1,
-            "type": "urn:miot-spec:service:fan:00000802",
+            "type": "urn:miot-spec-v2:service:fan:00007808:zhimi-sa1:1",
             "description": "Fan",
             "properties": [
                 {
                     "iid": 1,
-                    "type": "urn:miot-spec:property:on:00000002",
+                    "type": "urn:miot-spec-v2:property:on:00000006:zhimi-sa1:1",
                     "description": "Switch Status",
                     "format": "bool",
                     "access": ["read", "write", "notify"]
                 },
                 {
                     "iid": 2,
-                    "type": "urn:miot-spec:property:speed-level:00000003:zhimi-supper-1",
+                    "type": "urn:miot-spec-v2:property:fan-level:00000016:zhimi-sa1:1",
                     "description": "Speed Level",
                     "format": "uint8",
                     "access": ["read", "write", "notify"],
@@ -141,12 +153,12 @@
         },
 		{
             "iid": 2,
-            "type": "urn:miot-spec:service:battery:00000809",
+            "type": "urn:miot-spec-v2:service:battery:00007805:zhimi-sa1:1",
             "description": "Battery",
             "properties": [
                 {
                     "iid": 1,
-                    "type": "urn:miot-spec:property:battery-level:00000013",
+                    "type": "urn:miot-spec-v2:property:battery-level:00000014:zhimi-sa1:1",
                     "description": "Battery Level",
                     "format": "uint8",
                     "access": ["read", "notify"],
@@ -155,7 +167,7 @@
                 },
                 {
 					"iid": 1,
-                    "type": "urn:miot-spec:property:charging-state:0000001F",
+                    "type": "urn:miot-spec-v2:property:charging-state:00000015:zhimi-sa1:1",
                     "description": "Charging State",
                     "format": "uint8",
                     "access": ["read", "notify"],
@@ -202,28 +214,11 @@
 
 ## 2. SpecificationType
 
-规范定义类型，简写为 type，类型定义采用UUID或URN格式，这两种方式是等价的：
+规范定义类型，简写为 type，必须是URN格式：
 
-> - uuid:00000007-0000-0000-2000-000000123456
-> - urn:miot-spec:service:device-info:00000007
-
-
-
-* UUID表达式
-
-  UUID表达式遵循URN语法规范(RFC2141)，只有2个字段：
-
-  ```
-  <UUID> ::= "uuid":"<value>"
-  ```
-
-  * uuid
-
-    第一个字段必须为uuid，否则视为非法urn。
-
-  * value
-
-    16进制字符串，这是一个完整UUID的值。
+```
+urn:miot-spec-v2:service:device-information:00007801
+```
 
 
 
@@ -232,7 +227,7 @@
   URN表达式遵循URN语法规范(RFC2141)，6个字段，最后一个字段为可选：
 
   ```
-  <URN> ::= "urn:"<namespace>":"<type>":"<name>":"<value>[":"<vendor-product>"]
+  <URN> ::= "urn:"<namespace>":"<type>":"<name>":"<value>[":"<vendor-product>":"<version>]
   ```
   * urn
 
@@ -240,7 +235,7 @@
 
   * namespace
 
-    在本规范中，只能是miot-spec。
+    如果是小米定义的规范为miot-spec，蓝牙联盟定义的规范为bluetooth-spec。
 
   * type
 
@@ -273,14 +268,25 @@
     厂家+产品代号，有意义的单词或单词组合(小写字母)，用"-"间隔，比如：
 
     * philips-moonlight
-    * philips-candle
-    * chuangmi-v3
+    * yeelink-c300
+    * zhimi-vv
+    * benz-c63
 
     ```
-    注：这个字段只有在设备实例中出现。
+    注：这个字段只有在设备实例定义里出现。
     ```
-    
 
+  * version
+
+    版本号，只能是数字，如:
+
+    * 1
+    * 2
+    * 3
+
+    ```
+    注：这个字段只有在设备实例定义里出现。
+    ```
 
 ## 3. 设备规范定义
 
@@ -295,16 +301,17 @@
 
 - [x] type（SpecificationType, 简写为type）
 
-  设备类型，必须是UUID表达式或URN表达式，如：
+    设备类型，必须是URN表达式，如：
 
   ```
-  uuid:00000007-0000-0000-3000-000000123456
-  urn:miot-spec:device:lightbulb:00000007
+  urn:miot-spec-v2:service:fan:00007808
   ```
+
+
 
 - [x] description（描述）
 
-  纯文本字段，对此Device做一个简单的描述，如：
+   纯文本字段，对此Device做一个简单的描述，如：
 
   ```
   Lightbulb
@@ -320,13 +327,15 @@
 
 ```json
 {
-    "type": "urn:miot-spec:device:fan:00000A04",
+    "type": "urn:miot-spec-v2:device:fan:0000A005",
     "description": "Fan",
     "required-services": [
-        "urn:miot-spec:service:fan:00000802"
+        "urn:miot-spec-v2:service:device-information:00007801",
+        "urn:miot-spec-v2:service:fan:00007808"
     ],
     "optional-services": [
-        "urn:miot-spec:service:battery:00000809"
+        "urn:miot-spec-v2:service:physical-controls-locked:00007807",
+        "urn:miot-spec-v2:service:battery:00007805"
     ]
 }
 ```
@@ -338,6 +347,7 @@
   * 风扇基本功能
 * 作为一个风扇，可以有：
   * 电池功能
+  * 物理遥控器锁死功能
 
 
 
@@ -356,70 +366,93 @@
 
 - [x] type（SpecificationType, 简写为type）
 
-   设备类型，必须是UUID表达式或URN表达式，如：
+   设备类型，必须是URN表达式，如：
 
    ```
-   uuid:00000007-0000-0000-2000-000000123456
-   urn:miot-spec:service:fan:00000007
+   urn:miot-spec-v2:service:fan:00007808
    ```
+
+   
 
 - [x] description（描述）
 
-  纯文本字段，对此Service做一个简单的描述。
+  纯文本字段，对此Service做一个简单的描述，如：
+
+  ```
+  fan service
+  ```
+
+  
 
 - [ ] required-actions（必选方法列表）
 
+   如：
+
    ```json
    "required-actions": [
-   	"urn:miot-spec:action:get-stream-configuration:00000001",
-   	"urn:miot-spec:action:start-stream:00000101",
-   	"urn:miot-spec:action:stop-stream:00000201"
+   	"urn:miot-spec-v2:action:get-stream-configuration:00000001",
+   	"urn:miot-spec-v2:action:start-stream:00000101",
+   	"urn:miot-spec-v2:action:stop-stream:00000201"
    ]
    ```
 
 
 - [ ] optional-actions（可选方法列表）
 
+  如：
+
   ```json
-  "optional-properties": [
-      "urn:miot-spec:property:day-of-the-week:00000003"
+  "optional-actions": [
+  	"urn:miot-spec-v2:action:identify:00002801"
   ]
   ```
 
 
 - [ ] required-events（必选事件列表）
 
+  如：
+
   ```json
   "required-events": [
-      "urn:miot-spec:event:alert1:00000007"
+      "urn:miot-spec-v2:event:alert1:00000007"
   ]
   ```
 
 - [ ] optional-events（可选事件列表）
 
+  如：
+
   ```json
   "optional-events": [
-      "urn:miot-spec:event:alert2:00000008"
+      "urn:miot-spec-v2:event:alert2:00000008"
   ]
   ```
 
 
 - [ ] required-properties（必选属性列表）
 
-      如：
+  如：
 
-      ```json
-      "required-properties": [
-          "urn:miot-spec:property:deviceName:00000001",
-          "urn:miot-spec:property:current-temperature:00000002",
-      ]
-      ```
+  ```json
+  "required-properties": [
+      "urn:miot-spec-v2:property:on:00000006",
+      "urn:miot-spec-v2:property:fan-level:00000016"
+  ]
+  ```
 
 - [ ] optional-properties（可选属性列表）
 
+  如：
+
   ```json
   "optional-properties": [
-      "urn:miot-spec:property:day-of-the-week:00000003"
+      "urn:miot-spec-v2:property:horizontal-swing:00000017",
+      "urn:miot-spec-v2:property:vertical-swing:00000018",
+      "urn:miot-spec-v2:property:horizontal-angle:00000019",
+      "urn:miot-spec-v2:property:vertical-angle:0000001A",
+      "urn:miot-spec-v2:property:mode:00000008",
+      "urn:miot-spec-v2:property:status:00000007",
+      "urn:miot-spec-v2:property:fault:00000009"
   ]
   ```
 
@@ -427,17 +460,20 @@ Example 2.4.1
 
 ```json
 {
-    "type": "urn:miot-spec:service:fan:00000802",
+    "type": "urn:miot-spec-v2:service:fan:00007808",
     "description": "Fan",
     "required-properties": [
-        "urn:miot-spec:property:on:00000002",
-        "urn:miot-spec:property:speed-level:00000003"
+        "urn:miot-spec-v2:property:on:00000006",
+        "urn:miot-spec-v2:property:fan-level:00000016"
     ],
     "optional-properties": [
-        "urn:miot-spec:property:name:00000001",
-        "urn:miot-spec:property:swing:00000005",
-        "urn:miot-spec:property:swing-angle:00000006",
-        "urn:miot-spec:property:physical-controls-locked:00000004"
+        "urn:miot-spec-v2:property:horizontal-swing:00000017",
+        "urn:miot-spec-v2:property:vertical-swing:00000018",
+        "urn:miot-spec-v2:property:horizontal-angle:00000019",
+        "urn:miot-spec-v2:property:vertical-angle:0000001A",
+        "urn:miot-spec-v2:property:mode:00000008",
+        "urn:miot-spec-v2:property:status:00000007",
+        "urn:miot-spec-v2:property:fault:00000009"
     ]
 }
 ```
@@ -463,41 +499,40 @@ Example 2.4.1
 <u>Example 2.4.2</u>
 
 ```json
-
-"type": "urn:miot-spec:service:camera:00000007",
+"type": "urn:miot-spec-v2:service:camera:00000007",
 "description": "Camera",
 "required-properties": [
-    "urn:miot-spec:property:streaming-status:00000004",
-    "urn:miot-spec:property:support-video-stream-configuration:00000002",
-    "urn:miot-spec:property:support-audio-stream-configuration:00000002",
-    "urn:miot-spec:property:support-rtp-stream-configuration:00000003",
-    "urn:miot-spec:property:session-id:00000102",
-    "urn:miot-spec:property:conroller-ip-version:00000103",
-    "urn:miot-spec:property:conroller-ip-address:00000104",
-    "urn:miot-spec:property:conroller-video-rtp-port:00000105",
-    "urn:miot-spec:property:conroller-audio-rtp-port:00000106",
-    "urn:miot-spec:property:selected-video-parameters:00000107",
-    "urn:miot-spec:property:selected-audio-parameters:00000108",
-    "urn:miot-spec:property:device-status:00000109",
-    "urn:miot-spec:property:device-ip-version:00000110",
-    "urn:miot-spec:property:device-ip-address:00000111",
-    "urn:miot-spec:property:synchronization-source-for-video:00000112",
-    "urn:miot-spec:property:synchronization-source-for-audio:00000113",
-    "urn:miot-spec:property:session-control:00000119"
+    "urn:miot-spec-v2:property-v2:streaming-status:00000004",
+    "urn:miot-spec-v2:property-v2:support-video-stream-configuration:00000002",
+    "urn:miot-spec-v2:property-v2:support-audio-stream-configuration:00000002",
+    "urn:miot-spec-v2:property-v2:support-rtp-stream-configuration:00000003",
+    "urn:miot-spec-v2:property-v2:session-id:00000102",
+    "urn:miot-spec-v2:property-v2:conroller-ip-version:00000103",
+    "urn:miot-spec-v2:property-v2:conroller-ip-address:00000104",
+    "urn:miot-spec-v2:property-v2:conroller-video-rtp-port:00000105",
+    "urn:miot-spec-v2:property-v2:conroller-audio-rtp-port:00000106",
+    "urn:miot-spec-v2:property-v2:selected-video-parameters:00000107",
+    "urn:miot-spec-v2:property-v2:selected-audio-parameters:00000108",
+    "urn:miot-spec-v2:property-v2:device-status:00000109",
+    "urn:miot-spec-v2:property-v2:device-ip-version:00000110",
+    "urn:miot-spec-v2:property-v2:device-ip-address:00000111",
+    "urn:miot-spec-v2:property-v2:synchronization-source-for-video:00000112",
+    "urn:miot-spec-v2:property-v2:synchronization-source-for-audio:00000113",
+    "urn:miot-spec-v2:property-v2:session-control:00000119"
 ],
 "required-actions": [
-    "urn:miot-spec:action:get-stream-configuration:00000001",
-    "urn:miot-spec:action:start-stream:00000101",
-    "urn:miot-spec:action:stop-stream:00000201"
+    "urn:miot-spec-v2:action-v2:get-stream-configuration:00000001",
+    "urn:miot-spec-v2:action-v2:start-stream:00000101",
+    "urn:miot-spec-v2:action-v2:stop-stream:00000201"
 ],
 "optional-actions": [
-    "urn:miot-spec:action:set-stream-configuration:00000009",
+    "urn:miot-spec-v2:action:set-stream-configuration:00000009",
 ],
 "required-events": [
-    "urn:miot-spec:event:alert:00000007"
+    "urn:miot-spec-v2:event:alert:00000007"
 ],
 "optional-events": [
-    "urn:miot-spec:event:warrning:00000008"
+    "urn:miot-spec-v2:event:warrning:00000008"
 ]
 ```
 注意，与Example 2.4.1相比，多了几个字段：
@@ -525,11 +560,10 @@ Example 2.4.1
 
 - [x] type （SpecificationType, 简写为type）
 
-  设备类型，必须是UUID表达式或URN表达式，如：
+  设备类型，必须URN表达式，如：
 
   ```
-  uuid:00000001-0000-0000-4000-000000123456
-  urn:miot-spec:action:get-stream-configuration:00000001
+  urn:miot-spec-v2:action:play:0000280B
   ```
 
 - [x] description（描述）
@@ -542,11 +576,11 @@ Example 2.4.1
 
 - [ ] in（输入参数列表）
 
-  可以是0到N个，每个参数都由属性组成。
+      可以是0到N个，每个参数都由属性组成。
 
 - [ ] out（输出参数列表）
 
-  可以是0到N个，每个参数都由属性组成。
+      可以是0到N个，每个参数都由属性组成。
 
 
 
@@ -554,14 +588,14 @@ Example 2.4.1
 
 ```json
 {
-    "type": "urn:miot-spec:action:get-stream-configuration:00000001",
+    "type": "urn:miot-spec-v2:action:get-stream-configuration:00000001",
     "description": "Get Streaming Configuration Of Camera",
     "in": [],
     "out": [
-        "urn:miot-spec:property:streaming-status:00000004",
-        "urn:miot-spec:property:support-video-stream-configuration:00000002",
-        "urn:miot-spec:property:support-audio-stream-configuration:00000002",
-        "urn:miot-spec:property:support-rtp-stream-configuration:00000003"
+        "urn:miot-spec-v2:property:streaming-status:00000004",
+        "urn:miot-spec-v2:property:support-video-stream-configuration:00000002",
+        "urn:miot-spec-v2:property:support-audio-stream-configuration:00000002",
+        "urn:miot-spec-v2:property:support-rtp-stream-configuration:00000003"
     ]
 }
 ```
@@ -570,24 +604,24 @@ Example 2.4.1
 
 ```json
 {
-    "type": "urn:miot-spec:action:start-stream:00000101",
+    "type": "urn:miot-spec-v2:action:start-stream:00000101",
     "description": "Start Camera Streaming",
     "in": [
-        "urn:miot-spec:property:session-id:00000102",
-        "urn:miot-spec:property:conroller-ip-version:00000103",
-        "urn:miot-spec:property:conroller-ip-address:00000104",
-        "urn:miot-spec:property:conroller-video-rtp-port:00000105",
-        "urn:miot-spec:property:conroller-audio-rtp-port:00000106",
-        "urn:miot-spec:property:selected-video-parameters:00000107",
-        "urn:miot-spec:property:selected-audio-parameters:00000108"
+        "urn:miot-spec-v2:property:session-id:00000102",
+        "urn:miot-spec-v2:property:conroller-ip-version:00000103",
+        "urn:miot-spec-v2:property:conroller-ip-address:00000104",
+        "urn:miot-spec-v2:property:conroller-video-rtp-port:00000105",
+        "urn:miot-spec-v2:property:conroller-audio-rtp-port:00000106",
+        "urn:miot-spec-v2:property:selected-video-parameters:00000107",
+        "urn:miot-spec-v2:property:selected-audio-parameters:00000108"
     ],
     "out": [
-        "urn:miot-spec:property:device-status:00000109",
-        "urn:miot-spec:property:device-ip-version:00000110",
-        "urn:miot-spec:property:device-ip-address:00000111",
-        "urn:miot-spec:property:synchronization-source-for-video:00000112",
-        "urn:miot-spec:property:synchronization-source-for-audio:00000113",
-        "urn:miot-spec:property:session-control:00000119"
+        "urn:miot-spec-v2:property:device-status:00000109",
+        "urn:miot-spec-v2:property:device-ip-version:00000110",
+        "urn:miot-spec-v2:property:device-ip-address:00000111",
+        "urn:miot-spec-v2:property:synchronization-source-for-video:00000112",
+        "urn:miot-spec-v2:property:synchronization-source-for-audio:00000113",
+        "urn:miot-spec-v2:property:session-control:00000119"
     ]
 }
 ```
@@ -596,7 +630,7 @@ Example 2.4.1
 
 ```
 对于同时需要对多个属性的读写才能完成一次有意义的操作，用Action，如上文的开启摄像头视频流。
-如果对某些属性的写操作很耗时，则用Action，返回HTTP/1.1 202 Accepted，待操作完成后再用事件通知。
+如果对某些属性的写操作很耗时，则用Action，status返回1，待操作完成后再用事件通知。
 ```
 
 
@@ -614,10 +648,9 @@ Example 2.4.1
 
 - [x] type（SpecificationType, 简写为type）
 
-  设备类型，必须是UUID表达式或URN表达式，如：
+  设备类型，必须是URN表达式，如：
 
   ```
-  uuid:00000001-0000-0000-5000-000000123456
   urn:miot-spec:spec:event:alert:00000007
   ```
 
@@ -639,11 +672,11 @@ Example 2.4.1
 
 ```json
 {
-    "type": "urn:miot-spec:event:alert:00000007",
+    "type": "urn:miot-spec-v2:event:alert:00000007",
     "description": "alert alert alert!!!",
     "arguments": [
-        "urn:miot-spec:property:name:00000002",
-        "urn:miot-spec:property:temperature:00000003"
+        "urn:miot-spec-v2:property:name:00000002",
+        "urn:miot-spec-v2:property:temperature:00000003"
     ]
 }
 ```
@@ -666,11 +699,10 @@ Example 2.4.1
 
 - [x] type （SpecificationType, 简写为type）
 
-  设备类型，必须是UUID表达式或URN表达式，如：
+  设备类型，必须是URN表达式，如：
 
   ```
-  uuid:00000001-0000-0000-5000-000000123456
-  urn:miot-spec:spec:event:temperature:00001234
+  urn:miot-spec-v2:property:color-temperature:0000000F
   ```
 
 - [x] description（描述）
@@ -718,7 +750,8 @@ Example 2.4.1
 | ------ | ------ | ---- |
 | 16     | 32     | 0.5  |
 
-  用一个JSON数组表示    
+用JSON数组表示：
+
   ```json
 [16, 32, 0.5]
   ```
@@ -729,19 +762,19 @@ Example 2.4.1
 
   * value
   * description
-    
+
   用JSON数组表示，如:
 
   ```json
-  [
-      {"value": 1, "description": "Monday"},
-      {"value": 2, "description": "Tuesday"},
-      {"value": 3, "description": "Wednesday"},
-      {"value": 4, "description": "Thursday"},
-      {"value": 5, "description": "Friday"},
-      {"value": 6, "description": "Saturday"},
-      {"value": 7, "description": "Sunday"}
-  ]
+    [
+        {"value": 1, "description": "Monday"},
+        {"value": 2, "description": "Tuesday"},
+        {"value": 3, "description": "Wednesday"},
+        {"value": 4, "description": "Thursday"},
+        {"value": 5, "description": "Friday"},
+        {"value": 6, "description": "Saturday"},
+        {"value": 7, "description": "Sunday"}
+    ]
   ```
 
 - [ ] unit (单位，可选字段) 
@@ -760,13 +793,11 @@ Example 2.4.1
 | pascal     | 帕斯卡(大气压强单位) |
 | arcdegrees | 弧度(角度单位)       |
 
-
-
 <u>Example 2.7.1</u> 最简单的定义
 
 ```json
 {
-    "type": "urn:miot-spec:property:device-name:00000001",
+    "type": "urn:miot-spec-v2:property:device-name:00000001",
     "description": "Device Name",
     "format": "string",
     "access": ["read"]
@@ -777,7 +808,7 @@ Example 2.4.1
 
 ```json
 {
-    "type": "urn:miot-spec:property:current-temperature:00000002",
+    "type": "urn:miot-spec-v2:property:current-temperature:00000002",
     "description": "Current temperature",
     "format": "float",
     "access": ["read", "write", "notify"],
@@ -790,7 +821,7 @@ Example 2.4.1
 
 ```json
 {
-    "type": "urn:miot-spec:property:day-of-the-week:00000003",
+    "type": "urn:miot-spec-v2:property:day-of-the-week:00000003",
     "description": "Day Of The Week",
     "format": "uint8",
     "access": ["read", "write", "notify"],
@@ -849,18 +880,18 @@ iid用整型表示，一个iid在同一级是唯一的，所谓的“iid在同�
 * 规范定义的属性（speed-level，定义了5个档位）
 ```json
 {
-    "type": "urn:miot-spec:property:speed-level:00000003",
+    "type": "urn:miot-spec-v2:property:speed-level:00000023",
     "description": "Speed Level",
     "format": "uint8",
-    "access": ["read", "write","notify"],
-    "value-range": [1, 5, 1]
+    "access": ["read", "write", "notify"],
+    "value-range": [1, 5, 1] 
 }
 ```
 
 * 智米做了一款风扇，继承了这个属性，修改风扇的档位为10档
 ```json
 {
-    "type": "urn:miot-spec:property:speed-level:00000003:zhimi-v1",
+    "type": "urn:miot-spec-v2:property:speed-level:00000003:zhimi-v1:1",
     "description": "Speed Level",
     "format": "uint8",
     "access": ["read", "write","notify"],
@@ -872,8 +903,8 @@ iid用整型表示，一个iid在同一级是唯一的，所谓的“iid在同�
 
 ```json
 {
-    "type": "urn:miot-spec:property:speed-level:00000003:auxgroup-ff",
-    "description": "rotation speed of fan",
+    "type": "urn:miot-spec-v2:property:speed-level:00000003:auxgroup-ff:1",
+    "description": "Speed Level",
     "format": "uint8",
     "access": ["read", "write", "notify"],
     "value-range": [1, 3, 1]
@@ -895,18 +926,13 @@ iid用整型表示，一个iid在同一级是唯一的，所谓的“iid在同�
 设备实例必须是继承方式，如：
 
 ```
-urn:miot-spec:device:air-conditioner:00000A06:aux,
-urn:miot-spec:device:air-conditioner:00000A06:midea,
-urn:miot-spec:device:air-conditioner:00000A06:zhimi,
-urn:miot-spec:device:air-monitor:00000A07:cgllc,
-urn:miot-spec:device:air-monitor:00000A07:zhimi,
-urn:miot-spec:device:air-purifier:00000A05:zhimi-m1,
-urn:miot-spec:device:lightbulb:00000A03:philips,
-urn:miot-spec:device:lightbulb:00000A03:roome-v1-1,
-urn:miot-spec:device:lightbulb:00000A03:yeelink-lamp,
-urn:miot-spec:device:outlet:00000A01:chuangmi-v1,
-urn:miot-spec:device:outlet:00000A01:lumi,
-urn:miot-spec:device:outlet:00000A01:zimi,
+urn:miot-spec-v2:device:light:0000A001:tuya02-tywl1:1
+urn:miot-spec-v2:device:air-conditioner:0000A004:aden-a1:1
+urn:miot-spec-v2:device:air-conditioner:0000A004:aux-v1:1
+urn:miot-spec-v2:device:outlet:0000A002:chuangmi-hmi205:1
+urn:miot-spec-v2:device:outlet:0000A002:chuangmi-m1:1
+urn:miot-spec-v2:device:outlet:0000A002:chuangmi-v3:1
+urn:miot-spec-v2:device:cooker:0000A00B:chunmi-normal2:
 ```
 
 厂家创建一个设备时，必须实现：
@@ -935,24 +961,11 @@ urn:miot-spec:device:outlet:00000A01:zimi,
 * optional-events
 * optional-properties
 
-同时，厂家如果添加了其他action/event/property，Service的使用属于继承方式，也需要加上后缀字段，如：
-
-```
-urn:miot-spec:service:fan:00000802:zhimi
-urn:miot-spec:service:fan:00000802:philips
-```
-
 
 
 ### 2.3 Action 
 
 在Action实例中，in和out参数可以被修改。
-
-如果参数被修改，则此Action实例属于继承方式，需要加上后缀字段，如：
-
-```
-urn:miot-spec:action:start:00000802:zhimi
-```
 
 
 
@@ -976,14 +989,6 @@ urn:miot-spec:action:start:00000802:zhimi
 
 当然，一般情况下，我们只推荐修改值的约束范围。
 
-如果以上任何一个字段被修改，则此Property实例属于继承方式，需要加上后缀字段。如：
-
-```
-urn:miot-spec:property:speed-level:00000003:zhimi
-urn:miot-spec:property:speed-level:00000003:media
-urn:miot-spec:property:speed-level:00000003:auxgroup
-```
-
 
 
 ## 3. 范例
@@ -993,109 +998,127 @@ urn:miot-spec:property:speed-level:00000003:auxgroup
 * 灯泡实例定义
     ```json
     {
-        "type": "urn:miot-spec:device:lightbulb:00000A03:philips",
-        "description": "Lightbulb",
+        "type": "urn:miot-spec-v2:device:light:0000A001:philips-moonlight:1",
+        "description": "Light",
         "services": [
             {
                 "iid": 1,
-                "type": "urn:miot-spec:service:device-information:00000800",
+                "type": "urn:miot-spec-v2:service:device-information:00007801:philips-moonlight:1",
                 "description": "Device Information",
                 "properties": [
                     {
                         "iid": 1,
-                        "type": "urn:miot-spec:property:manufacturer:00000024",
+                        "type": "urn:miot-spec-v2:property:manufacturer:00000001:philips-moonlight:1",
                         "description": "Device Manufacturer",
                         "format": "string",
-                        "access": ["read"]
+                        "access": [
+                            "read"
+                        ]
                     },
                     {
                         "iid": 2,
-                        "type": "urn:miot-spec:property:model:00000025",
+                        "type": "urn:miot-spec-v2:property:model:00000002:philips-moonlight:1",
                         "description": "Device Model",
                         "format": "string",
-                        "access": ["read"]
+                        "access": [
+                            "read"
+                        ]
                     },
                     {
                         "iid": 3,
-                        "type": "urn:miot-spec:property:serial-number:00000026",
+                        "type": "urn:miot-spec-v2:property:serial-number:00000003:philips-moonlight:1",
                         "description": "Device Serial Number",
                         "format": "string",
-                        "access": ["read"]
+                        "access": [
+                            "read"
+                        ]
                     },
                     {
                         "iid": 4,
-                        "type": "urn:miot-spec:property:name:00000001",
+                        "type": "urn:miot-spec-v2:property:name:00000004:philips-moonlight:1",
                         "description": "Device Name",
                         "format": "string",
-                        "access": ["read"]
+                        "access": [
+                            "read"
+                        ]
+                    },
+                    {
+                        "iid": 5,
+                        "type": "urn:miot-spec-v2:property:firmware-revision:00000005:philips-moonlight:1",
+                        "description": "Current Firmware Version",
+                        "format": "string",
+                        "access": [
+                            "read"
+                        ]
                     }
                 ]
             },
             {
                 "iid": 2,
-                "type": "urn:miot-spec:service:lightbulb:00000803",
-                "description": "Lightbulb",
+                "type": "urn:miot-spec-v2:service:light:00007802:philips-moonlight:1",
+                "description": "Light",
                 "properties": [
                     {
                         "iid": 1,
-                        "type": "urn:miot-spec:property:on:00000002",
+                        "type": "urn:miot-spec-v2:property:on:00000006:philips-moonlight:1",
                         "description": "Switch Status",
                         "format": "bool",
-                        "access": ["read", "write", "notify"]
-                    }
-                ]
-            }
-        ]
-    }
-    ```
-    
-* 电饭锅实例定义
-    Action和Event在实例定义中引用的Property将是Property Instance ID:
-    ```json
-    {
-        "type": "urn:miot-spec:device:cooker:00000A08:chunmi",
-        "description": "Chunmi Cooker",
-        "services": [
-            ... // 这里省略了device-information
-            {
-                "iid": 2,
-                "type": "urn:miot-spec:service:cooker:0000080A:chunmi",
-                "description": "Cooker",
-                "properties": [
-                    {
-                        "iid": 1,
-                        "type": "urn:miot-spec:property:cooker-status:00000020:chunmi",
-                        "description": "Cooker Status",
-                        "format": "uint8",
-                        "access": ["read", "notify"],
-                        "value-list": [
-                            {"value": 1, "description": "IDLE"},
-                            {"value": 2, "description": "RUNNING"},
-                            {"value": 3, "description": "KEEP_WARM"},
-                            {"value": 4, "description": "BUSY"}
+                        "access": [
+                            "read",
+                            "write",
+                            "notify"
                         ]
                     },
                     {
                         "iid": 2,
-                        "type": "urn:miot-spec:property:cooker-cook:00000021:chunmi",
-                        "description": "Cooker Cook",
+                        "type": "urn:miot-spec-v2:property:brightness:0000000D:philips-moonlight:1",
+                        "description": "Brightness",
                         "format": "uint8",
-                        "access": [],
-                        "value-list": [
-                            {"value": 1, "description": "FINE_COOK"},
-                            {"value": 2, "description": "QUICK_COOK"},
-                            {"value": 3, "description": "COOK_CONGEE"},
-                            {"value": 4, "description": "KEEP_WARM"}
-                        ]
-                    }
-                ],
-                "actions": [
+                        "access": [
+                            "read",
+                            "write",
+                            "notify"
+                        ],
+                        "value-range": [
+                            1,
+                            100,
+                            1
+                        ],
+                        "unit": "percentage"
+                    },
                     {
-                        "iid": 1,
-                        "type": "urn:miot-spec:action:start-cook:00000401:chunmi",
-                        "description": "Start Cook",
-                        "in": [2], 
-                        "out": []
+                        "iid": 3,
+                        "type": "urn:miot-spec-v2:property:color:0000000E:philips-moonlight:1",
+                        "description": "Color",
+                        "format": "uint32",
+                        "access": [
+                            "read",
+                            "write",
+                            "notify"
+                        ],
+                        "value-range": [
+                            0,
+                            16777215,
+                            1
+                        ],
+                        "unit": "rgb"
+                    },
+                    {
+                        "iid": 4,
+                        "type": "urn:miot-spec-v2:property:color-temperature:0000000F:philips-moonlight:1",
+                        "description": "Color Temperature",
+                        "format": "uint32",
+                        "access": [
+                            "read",
+                            "write",
+                            "notify"
+                        ],
+                        "value-range": [
+                            1700,
+                            6500,
+                            1
+                        ],
+                        "unit": "kelvin"
                     }
                 ]
             }
@@ -1103,314 +1126,224 @@ urn:miot-spec:property:speed-level:00000003:auxgroup
     }
     ```
 
-# 四、读取规范定义
+# 四、设备实例升级
 
-miot-spec定义了很多Property、Action、Event、Service、Device。从www.miot-spec.org 可以读取规范定义。
+物理设备的固件升级后，可能：
 
-## 1. 读取所有PropertyType
-```http
-GET /spec/properties
+1. 仅仅是修复内部bug。
+2. 增加了设备功能。
+
+对于第1种情况，我们不关心。
+
+对于第2种情况，我们需要规定好升级方式。
+
+比如一款风扇升级过N个固件，更改了3次功能，这3次升级都修改了设备实例的type：
+
+```
+urn:miot-spec-v2:device:fan:0000A005:zhimi-zxc:1
+urn:miot-spec-v2:device:fan:0000A005:zhimi-zxc:2
+urn:miot-spec-v2:device:fan:0000A005:zhimi-zxc:3
 ```
 
-返回
-```http
-HTTP/1.1 200 OK
-Content-Type: text/json; charset=utf-8
-Content-Length: 465
-    
-{
-    "types": [
-        "urn:miot-spec:property:name:00000001",
-        "urn:miot-spec:property:switch:00000002",
-        ...
-    ]
-}
-```
 
-## 2. 读取指定的Property定义
-```http
-GET /spec/property?type=name
-```
-或
-```http
-GET /spec/property?type=urn:miot-spec:property:name:00000001
-```
 
-返回
-```http
-HTTP/1.1 200 OK
-Content-Type: text/json; charset=utf-8
-Content-Length: 89
-    
-{
-    "type": "urn:miot-spec:property:name:00000001",
-    "description": "name",
-    "format": "string",
-    "access": ["read"]
-}
-```
+## 1. 升级约定
 
-## 3. 读取所有ActionType
-```http
-GET /spec/actions
-```
+* 升级版本号，需要向下兼容，即：
+  * 只能添加功能，不能删除和修改旧功能。
 
-返回
-```http
-HTTP/1.1 200 OK
-Content-Type: text/json; charset=utf-8
-Content-Length: 465
-    
-{
-    "types": [
-        "urn:miot-spec:action:xxxxx:00000001",
-        ...
-    ]
-}
-```
+* 如果更改了产品型号，则不需要考虑兼容。
 
-## 4. 读取指定的Action定义
-```http
-GET /spec/action?type=xxxx
-```
-或
-```http
-GET /spec/action?type=urn:miot-spec:action:xxxx:00000001
-```
+* 绝大多数情况下，不建议升级产品型号。
 
-返回
-```http
-HTTP/1.1 200 OK
-Content-Type: text/json; charset=utf-8
-Content-Length: 89
-    
-{
-    "type": "urn:miot-spec:action:xxxx:00000001",
-    "description": "name",
-    "in": [],
-    "out": []
-}
-```
+  
 
-## 5. 读取所有EventType
-```http
-GET /spec/events
-```
+## 2. 范例
 
-返回
-```http
-HTTP/1.1 200 OK
-Content-Type: text/json; charset=utf-8
-Content-Length: 465
-    
-{
-    "types": [
-        "urn:miot-spec:event:xxxx:00000001",
-        ...
-    ]
-}
-```
+* 初始版本定义
 
-## 6. 读取指定的Event定义
-```http
-GET /spec/event?type=xxxx
-```
-或
-```http
-GET /spec/event?type=urn:miot-spec:event:xxxx:00000001
-```
+  当一个设备刚被创建的时候，版本号是1，如：
 
-返回
-```http
-HTTP/1.1 200 OK
-Content-Type: text/json; charset=utf-8
-Content-Length: 89
-    
-{
-    "type": "urn:miot-spec:event:xxxx:00000001",
-    "description": "xxxxxxx",
-    "arguments": []
-}
-```
-
-## 7. 读取所有ServiceType
-```http
-GET /spec/services
-```
-
-返回
-```http
-HTTP/1.1 200 OK
-Content-Type: text/json; charset=utf-8
-Content-Length: 465
-    
-{
-    "types": [
-        "urn:miot-spec:service:xxxx:00000001",
-        ...
-    ]
-}
-```
-
-## 8. 读取指定的Service定义
-```http
-GET /spec/service?type=xxxx
-```
-或
-```http
-GET /spec/service?type=urn:miot-spec:service:xxxx:00000001
-```
-
-返回
-```http
-HTTP/1.1 200 OK
-Content-Type: text/json; charset=utf-8
-Content-Length: 89
-    
-{
-    "type": "urn:miot-spec:service:xxxx:00000001",
-    "description": "xxxxxxx",
-    "required-properties": [],
-    "optional-properties": []
-}
-```
-
-## 9. 读取所有DeviceType
-```http
-GET /spec/devices
-```
-
-返回
-```http
-HTTP/1.1 200 OK
-Content-Type: text/json; charset=utf-8
-Content-Length: 465
-    
-{
-    "types": [
-        "urn:miot-spec:device:xxxx:00000001",
-        ...
-    ]
-}
-```
-
-## 10. 读取指定的Device定义
-```http
-GET /spec/device?type=xxxx
-```
-或
-```http
-GET /spec/device?type=urn:miot-spec:device:xxxx:00000001
-```
-
-返回
-```http
-HTTP/1.1 200 OK
-Content-Type: text/json; charset=utf-8
-Content-Length: 89
-    
-{
-    "type": "urn:miot-spec:device:xxxx:00000001",
-    "description": "xxxxxxx",
-    "required-services": [],
-    "optional-services": []
-}
-```
-
-# 五、读取实例定义
-
-设备实例，就是设备厂家遵循规范定义创建了具体设备的的实例定义。从 www.miot-spec.org 可以读取实例定义：
-
-## 1. 读取设备实例列表
-
-(1). 读取所有实例
-```http
-GET /instance/devices
-```
-
-(2). 指定vendor读取
-```http
-GET /instance/devices?vendor=yeelink
-```
-
-(3). 指定ns读取
-```http
-GET /instance/devices?ns=miot-spec
-```
-
-(4). 指定name读取
-```http
-GET /instance/devices?name=outlets
-```
-
-(5). 组合 (2) (3) (4)中的条件读取
-```http
-GET /instance/devices?ns=miot-spec&name=outlets
-```
-
-```http
-GET /instance/devices?name=outlets&vendor=yeelink
-```
-
-返回
-```http
-HTTP/1.1 200 OK
-Content-Type: text/json; charset=utf-8
-Content-Length: 89
-
-{
-    "instances": [
-        "urn:miot-spec:device:outlets:00000A01:generic",
-        ...
-    ]
-}
-```
-
-## 2. 读取设备实例定义
-
-需要指定DeviceType
-```http
-GET /instance/device?type=urn:miot-spec:device:lightbulb:00000001:yeelink
-```
-
-返回
-```http
-HTTP/1.1 200 OK
-Content-Type: text/json; charset=utf-8
-Content-Length: 89
-
-{
-  "type": "urn:miot-spec:device:lightbulb-mono:00000A02:yeelink",
-  "description": "",
-  "services": [
-    {
-      "iid": 1,
-      "type": "urn:miot-spec:service:light-mono:00000802",
-      "description": "单色光服务",
-      "properties": [
-        {
-          "iid": 1,
-          "type": "urn:miot-spec:property:on:00000002",
-          "description": "开关",
-          "format": "bool",
-          "access": ["read", "write", "notify"]
-        },
-        {
-          "iid": 2,
-          "type": "urn:miot-spec:property:brightness:00000003",
-          "description": "亮度",
-          "format": "int",
-          "access": ["read", "write", "notify"],
-          "value-range": [0, 100, 1],
-          "unit": "percentage"
-        }
+  ```json
+  {
+      "type": "urn:miot-spec-v2:device:fan:0000A005:zhimi-zxc:1",
+      "description": "Zhimi Fan",
+      "services": [
+          {
+              "iid": 1,
+              "type": "urn:miot-spec-v2:service:fan:00007808:zhimi-zxc:1",
+              "description": "Fan",
+              "properties": [
+                  {
+                      "iid": 1,
+                      "type": "urn:miot-spec-v2:property:on:00000006:zhimi-zxc:1",
+                      "description": "Switch Status",
+                      "format": "bool",
+                      "access": ["read", "write", "notify"]
+                  },
+                  {
+                      "iid": 2,
+                      "type": "urn:miot-spec-v2:property:fan-level:00000016:zhimi-zxc:1",
+                      "description": "Speed Level",
+                      "format": "uint8",
+                      "access": ["read", "write", "notify"],
+                      "value-range": [1, 3, 1]
+                  }
+              ]
+          }
       ]
-    }
-  ]
-}
-```
+  }
+  ```
 
-# 六、Q&A
+  注意:
+
+  * 设备实例中的type是
+
+    ```
+    urn:miot-spec-v2:device:fan:0000A005:zhimi-zxc:1
+    ```
+
+  * 风速被厂家修改了取值范围，type是
+
+    ```
+    urn:miot-spec-v2:property:fan-level:00000016:zhimi-zxc:1
+    ```
+
+  * 两个type的后缀保持一致，都是:
+
+    ```
+    zhimi-zxc:1
+    ```
+
+    
+
+
+* 升级
+
+  过了一段时间，厂家觉得3档太少，需要升级下固件，支持5个档位。设备实例被修改成：
+
+  ```json
+  {
+      "type": "urn:miot-spec-v2:device:fan:0000A005:zhimi-zxc:2",
+      "description": "Zhimi Fan",
+      "services": [
+          {
+              "iid": 1,
+              "type": "urn:miot-spec-v2:service:fan:00007808:zhimi-zxc:1",
+              "description": "Fan",
+              "properties": [
+                  {
+                      "iid": 1,
+                      "type": "urn:miot-spec-v2:property:on:00000006:zhimi-zxc:1",
+                      "description": "Switch Status",
+                      "format": "bool",
+                      "access": ["read", "write", "notify"]
+                  },
+                  {
+                      "iid": 2,
+                      "type": "urn:miot-spec-v2:property:fan-level:00000016:zhimi-zxc:1",
+                      "description": "Speed Level",
+                      "format": "uint8",
+                      "access": ["read", "write", "notify"],
+                      "value-range": [1, 3, 1]
+                  },
+                  {
+                      "iid": 3,
+                      "type": "urn:miot-spec-v2:property:fan-level:00000016:zhimi-zxc:2",
+                      "description": "Speed Level",
+                      "format": "uint8",
+                      "access": ["read", "write", "notify"],
+                      "value-range": [1, 5, 1]
+                  }
+              ]
+          }
+      ]
+  }
+  ```
+
+  注意:
+
+  * 设备实例中的type是（版本号变成了2）：
+
+    ```
+    urn:miot-spec-v2:device:fan:0000A005:zhimi-zxc:2
+    ```
+
+  * 原有的风速（fan-level）type依旧不变（这是一个在版本1时定义的风速）
+
+    ```
+    urn:miot-spec-v2:property:fan-level:00000016:zhimi-zxc:1
+    ```
+
+  * 新增加了一个风速（iid:  3，版本号是2），档位被调整为5档，type是:
+
+    ```
+    urn:miot-spec-v2:property:fan-level:00000016:zhimi-zxc:2
+    ```
+
+
+
+# 五、读取规范定义
+
+小米定义了很多Property、Action、Event、Service、Device。从www.miot-spec.org 使用标准HTTP/GET请求可以读取规范定义。
+
+###1. 读取Type列表
+
+* 读取所有的PropertyType
+
+  http://miot-spec.org/miot-spec-v2/spec/properties
+
+* 读取所有的ActionType
+
+  http://miot-spec.org/miot-spec-v2/spec/actions
+
+* 读取所有的EventType
+
+  http://miot-spec.org/miot-spec-v2/spec/events
+
+* 读取所有的ServiceType
+
+  http://miot-spec.org/miot-spec-v2/spec/services
+
+* 读取所有的DeviceType
+
+  http://miot-spec.org/miot-spec-v2/spec/devices
+
+###2. 读取具体Type定义
+
+* 读取一个PropertyType的具体定义
+
+  http://miot-spec.org/miot-spec-v2/spec/property?type=urn:miot-spec-v2:property:on:00000006
+
+* 读取一个ActionType的具体定义
+
+  http://miot-spec.org/miot-spec-v2/spec/action?type=urn:miot-spec-v2:action:play:0000280B
+
+* 读取一个ServiceType的具体定义
+
+  http://miot-spec.org/miot-spec-v2/spec/service?type=urn:miot-spec-v2:service:fan:00007808
+
+* 读取一个DeviceType的具体定义
+
+  http://miot-spec.org/miot-spec-v2/spec/device?type=urn:miot-spec-v2:device:light:0000A001
+
+
+
+# 六、读取实例定义
+
+设备实例，就是设备厂家遵循规范定义创建了具体设备的的实例定义。从 www.miot-spec.org 使用标准HTTP/GET可以读取实例定义：
+
+## 1. 读取所有设备实例列表
+
+http://miot-spec.org/miot-spec-v2/instances
+
+###2. 读取某个实例的详细定义
+
+http://miot-spec.org/miot-spec-v2/instance?type=urn:miot-spec-v2:device:outlet:0000A002:lumi-v1:1
+
+
+
+# 七、Q&A
 
 ## 1. MIOT-SPEC由谁定义？
 由米家开放平台定义。
