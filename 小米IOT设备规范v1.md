@@ -406,14 +406,12 @@
 
 - [ ] required-properties（必选属性列表）
 
-      如：
-
-      ```json
-      "required-properties": [
-          "urn:miot-spec:property:deviceName:00000001",
-          "urn:miot-spec:property:current-temperature:00000002",
-      ]
-      ```
+  ```json
+  "required-properties": [
+      "urn:miot-spec:property:deviceName:00000001",
+      "urn:miot-spec:property:current-temperature:00000002",
+  ]
+  ```
 
 - [ ] optional-properties（可选属性列表）
 
@@ -781,7 +779,7 @@ Example 2.4.1
     "description": "Current temperature",
     "format": "float",
     "access": ["read", "write", "notify"],
-    "value-range": [16, 32, 0.5]，
+    "value-range": [16, 32, 0.5],
     "unit": "celsius"
 }
 ```
@@ -1056,7 +1054,6 @@ urn:miot-spec:property:speed-level:00000003:auxgroup
         "type": "urn:miot-spec:device:cooker:00000A08:chunmi",
         "description": "Chunmi Cooker",
         "services": [
-            ... // 这里省略了device-information
             {
                 "iid": 2,
                 "type": "urn:miot-spec:service:cooker:0000080A:chunmi",
@@ -1122,7 +1119,6 @@ Content-Length: 465
     "types": [
         "urn:miot-spec:property:name:00000001",
         "urn:miot-spec:property:switch:00000002",
-        ...
     ]
 }
 ```
@@ -1164,7 +1160,6 @@ Content-Length: 465
 {
     "types": [
         "urn:miot-spec:action:xxxxx:00000001",
-        ...
     ]
 }
 ```
@@ -1206,7 +1201,6 @@ Content-Length: 465
 {
     "types": [
         "urn:miot-spec:event:xxxx:00000001",
-        ...
     ]
 }
 ```
@@ -1247,7 +1241,6 @@ Content-Length: 465
 {
     "types": [
         "urn:miot-spec:service:xxxx:00000001",
-        ...
     ]
 }
 ```
@@ -1289,7 +1282,6 @@ Content-Length: 465
 {
     "types": [
         "urn:miot-spec:device:xxxx:00000001",
-        ...
     ]
 }
 ```
@@ -1361,7 +1353,6 @@ Content-Length: 89
 {
     "instances": [
         "urn:miot-spec:device:outlets:00000A01:generic",
-        ...
     ]
 }
 ```

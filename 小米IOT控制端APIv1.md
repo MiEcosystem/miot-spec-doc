@@ -256,7 +256,7 @@ Content-Length: 346
         },
         {
             "pid": "AAAD.2.3",
-            "value": true;
+            "value": true
         }
     ]
 }
