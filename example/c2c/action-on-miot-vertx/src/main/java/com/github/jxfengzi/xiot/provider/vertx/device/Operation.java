@@ -1,12 +1,13 @@
 package com.github.jxfengzi.xiot.provider.vertx.device;
 
-import io.vertx.core.json.JsonArray;
+import com.github.jxfengzi.xiot.provider.vertx.typedef.ActionOperation;
+import com.github.jxfengzi.xiot.provider.vertx.typedef.PropertyOperation;
 
 public interface Operation {
 
-    Object get(String did, int siid, int piid);
+    void get(PropertyOperation property);
 
-    int set(String did, int siid, int piid, Object value);
+    void set(PropertyOperation property);
 
-    JsonArray invoke(String did, int siid, int aiid, JsonArray in);
+    void invoke(ActionOperation action);
 }

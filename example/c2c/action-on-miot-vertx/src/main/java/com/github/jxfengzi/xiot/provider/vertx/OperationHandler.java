@@ -4,9 +4,14 @@ import com.github.jxfengzi.xiot.provider.vertx.device.Operation;
 import com.github.jxfengzi.xiot.provider.vertx.device.impl.OperationMockImpl;
 import com.github.jxfengzi.xiot.provider.vertx.oauth.OAuthValidator;
 import com.github.jxfengzi.xiot.provider.vertx.oauth.impl.OAuthValidatorMockImpl;
+import com.github.jxfengzi.xiot.provider.vertx.typedef.ActionOperation;
+import com.github.jxfengzi.xiot.provider.vertx.typedef.PropertyOperation;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class OperationHandler {
 
@@ -94,8 +99,8 @@ public class OperationHandler {
 
         String userId = context.get("useId");
         JsonArray array = new JsonArray();
-        array.add(new JsonObject().put("did", "1001").put("type", "urn:miot-spec-v2:device:light:0000A001:opple-desk:1"));
-        array.add(new JsonObject().put("did", "1002").put("type", "urn:miot-spec-v2:device:light:0000A001:opple-desk:1"));
+        array.add(new JsonObject().put("did", "1001").put("name", "小白").put("type", "urn:miot-spec-v2:device:light:0000A001:opple-desk:1"));
+        array.add(new JsonObject().put("did", "1002").put("name", "小黑").put("type", "urn:miot-spec-v2:device:light:0000A001:opple-desk:1"));
 
         JsonObject object = new JsonObject();
         object.put("requestId", context.<String>get("requestId"));
@@ -111,23 +116,23 @@ public class OperationHandler {
             return;
         }
 
-        properties.forEach(x -> {
-            if (x instanceof JsonObject) {
-                JsonObject p = (JsonObject) x;
-                String did = p.getString("did", "");
-                int siid = p.getInteger("siid", 0);
-                int piid = p.getInteger("piid", 0);
+        // 1. 这里使用java8的stream，将每个Property解析出来
+        List<PropertyOperation> list = properties.stream()
+                .filter(x -> x instanceof JsonObject)
+                .map(x -> PropertyOperation.decodeGetPropertyRequest((JsonObject)x))
+                .collect(Collectors.toList());
 
-                // 读属性
-                p.put("value", operation.get(did, siid, piid));
-            }
-        });
+        // 2. 开始读属性
+        list.forEach(property -> operation.get(property));
 
+        // 3. 将每个Property的操作结果编码成JsonObject
+        List<JsonObject> result = list.stream().map(PropertyOperation::encodeGetPropertyResponse).collect(Collectors.toList());
+
+        // 4. 返回
         JsonObject object = new JsonObject();
         object.put("requestId", context.<String>get("requestId"));
         object.put("intent", context.<String>get("intent"));
-        object.put("properties", properties);
-
+        object.put("properties", new JsonArray(result));
         context.request().response().setStatusCode(200).end(object.encode());
     }
 
@@ -137,25 +142,23 @@ public class OperationHandler {
             return;
         }
 
-        properties.forEach(x -> {
-            if (x instanceof JsonObject) {
-                JsonObject p = (JsonObject) x;
-                String did = p.getString("did", "");
-                int siid = p.getInteger("siid", 0);
-                int piid = p.getInteger("piid", 0);
-                Object value = p.getValue("value", null);
+        // 1. 这里使用java8的stream，将每个Property解析出来
+        List<PropertyOperation> list = properties.stream()
+                .filter(x -> x instanceof JsonObject)
+                .map(x -> PropertyOperation.decodeSetPropertyRequest((JsonObject)x))
+                .collect(Collectors.toList());
 
-                // 写属性
-                int status = operation.set(did, siid, piid, value);
-                p.put("status", status);
-            }
-        });
+        // 2. 开始写属性
+        list.forEach(property -> operation.set(property));
 
+        // 3. 将每个Property的操作结果编码成JsonObject
+        List<JsonObject> result = list.stream().map(PropertyOperation::encodeGetPropertyResponse).collect(Collectors.toList());
+
+        // 4. 返回
         JsonObject object = new JsonObject();
         object.put("requestId", context.<String>get("requestId"));
         object.put("intent", context.<String>get("intent"));
-        object.put("properties", properties);
-
+        object.put("properties", new JsonArray(result));
         context.request().response().setStatusCode(200).end(object.encode());
     }
 
@@ -165,23 +168,17 @@ public class OperationHandler {
             return;
         }
 
-        String did = action.getString("did", "");
-        int siid = action.getInteger("siid", 0);
-        int aiid = action.getInteger("aiid", 0);
-        JsonArray in = action.getJsonArray("in", null);
+        // 1. 解码
+        ActionOperation a = ActionOperation.decodeRequest(action);
 
-        // 执行方法
-        JsonArray out = operation.invoke(did, siid, aiid, in);
+        // 2. 执行方法
+        operation.invoke(a);
 
-        action.remove("in");
-        action.put("out", out);
-        action.put("status", 0);
-
+        // 3. 返回
         JsonObject object = new JsonObject();
         object.put("requestId", context.<String>get("requestId"));
         object.put("intent", context.<String>get("intent"));
-        object.put("action", action);
-
+        object.put("action", a.encodeResponse());
         context.request().response().setStatusCode(200).end(object.encode());
     }
 }

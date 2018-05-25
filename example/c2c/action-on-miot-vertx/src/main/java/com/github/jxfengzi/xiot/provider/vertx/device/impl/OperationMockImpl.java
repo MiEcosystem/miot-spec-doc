@@ -1,27 +1,49 @@
 package com.github.jxfengzi.xiot.provider.vertx.device.impl;
 
 import com.github.jxfengzi.xiot.provider.vertx.device.Operation;
-import io.vertx.core.json.JsonArray;
+import com.github.jxfengzi.xiot.provider.vertx.typedef.ActionOperation;
+import com.github.jxfengzi.xiot.provider.vertx.typedef.PropertyOperation;
 
 public class OperationMockImpl implements Operation {
 
     @Override
-    public Object get(String did, int siid, int piid) {
-        // TODO: 读属性
-        return null;
+    public void get(PropertyOperation property) {
+        // TODO: 读属性,
+
+        // 如果成功， status = 0， 且返回属性值
+        property.status = 0;
+        property.value = 13;
+
+        // 如果失败， status为负值，且携带description（见文档《第三方设备云接入小米IOT平台》）
+        property.status = -1;
+        property.description = "did invalid";
     }
 
     @Override
-    public int set(String did, int siid, int piid, Object value) {
-        // 写属性
+    public void set(PropertyOperation property) {
+        // TODO: 写属性,
 
-        return 0;
+        // 如果成功， status=0
+        property.status = 0;
+
+        // 如果失败， status为负值，且携带description（见文档《第三方设备云接入小米IOT平台》）
+        property.status = -1;
+        property.description = "did invalid";
     }
 
     @Override
-    public JsonArray invoke(String did, int siid, int aiid, JsonArray in) {
-        // 执行方法
+    public void invoke(ActionOperation action) {
+        // TODO: 执行方法
 
-        return null;
+        // 如果成功， status=0
+        action.status = 0;
+
+        // 如果此方法有返回值，需要正确填写返回值，如：
+        action.out.add(17);
+        action.out.add("beijing");
+
+        // 如果失败， status为负值，且携带description（见文档《第三方设备云接入小米IOT平台》）
+        action.status = -1;
+        action.description = "did invalid";
     }
 }
