@@ -812,7 +812,7 @@ Example 2.4.1
     "description": "Current temperature",
     "format": "float",
     "access": ["read", "write", "notify"],
-    "value-range": [16, 32, 0.5]，
+    "value-range": [16, 32, 0.5],
     "unit": "celsius"
 }
 ```
