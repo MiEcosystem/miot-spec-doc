@@ -41,7 +41,7 @@
   HTTP/1.1 200 OK
   Content-Type: application/json
   Content-Length: 167
-
+  
   {
       "requestId": "xxxx",
       "intent": "get-devices",
@@ -67,7 +67,7 @@
   | requestId | 必须和请求中的requedtId一样                                  |
   | intent    | 必须和请求中的intent一样                                     |
   | did       | 设备唯一标识符(DeviceID)，必须是字符串，不能包含点字符，不能超过50个字符。 |
-  | type      | 设备类型，在小米开放平台申请得到此字符串                     |
+  | type      | 设备类型，在小米IOT开放平台创建产品时，在产品信息里的产品Type字段。 |
 
 ### 2. 读设备属性
 
