@@ -50,7 +50,7 @@
 <AID> ::= <DID>"."<SIID>"."<AIID>
 ```
 
-### 9. EID (Action ID)
+### 9. EID (Event ID)
 * 事件ID = 设备ID + 服务实例ID + 事件实例ID，即：
 ```
 <EID> ::= <DID>"."<SIID>"."<EIID>

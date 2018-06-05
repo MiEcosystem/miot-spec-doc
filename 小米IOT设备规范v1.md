@@ -381,8 +381,8 @@
 - [ ] optional-actions（可选方法列表）
 
   ```json
-  "optional-properties": [
-      "urn:miot-spec:property:day-of-the-week:00000003"
+  "optional-actions": [
+  	  "urn:miot-spec-v2:action:identify:00002801"
   ]
   ```
 
