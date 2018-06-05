@@ -382,7 +382,7 @@
 
   ```json
   "optional-actions": [
-      "urn:miot-spec:action:toggle-swing:00000413"
+  	  "urn:miot-spec-v2:action:identify:00002801"
   ]
   ```
 
