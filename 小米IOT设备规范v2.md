@@ -242,6 +242,7 @@ urn:miot-spec-v2:service:device-information:00007801
 
     SpecificationType (类型，简写为: type)，只能是如下几个：
 
+    * template
     * property
     * action
     * event
@@ -1127,7 +1128,37 @@ urn:miot-spec-v2:device:cooker:0000A00B:chunmi-normal2:
     }
     ```
 
-# 四、设备实例升级
+
+
+# 四、设备模板
+
+对于一些简单的设备, miot-spec会定义一些设备模板, 让开发者直接选就行了,而无需创建设备. 设备模板和设备实例定义几乎一样：
+
+## 1. 设备模板的type 
+
+模板type使用template，以区分设备实例定义，如：
+
+```
+urn:miot-spec-v2:device-template:light:0000C801
+```
+
+## 2. 继承模板的设备实例定义
+
+设备实例type加上模板的uuid为后缀，即：
+
+```
+<URN> ::= "urn:"<ns>":"<type>":"<name>":"<value>[":"<v-p>":"<version>[":"<template-uuid>]
+```
+
+如：
+
+```
+urn:miot-spec-v2:device:light:0000A001:yeelink-abc:1:0000C801
+```
+
+
+
+# 五、设备实例升级
 
 物理设备的固件升级后，可能：
 
@@ -1284,7 +1315,7 @@ urn:miot-spec-v2:device:fan:0000A005:zhimi-zxc:3
 
 
 
-# 五、读取规范定义
+# 六、读取规范定义
 
 小米定义了很多Property、Action、Event、Service、Device。从www.miot-spec.org 使用标准HTTP/GET请求可以读取规范定义。
 
@@ -1330,7 +1361,7 @@ urn:miot-spec-v2:device:fan:0000A005:zhimi-zxc:3
 
 
 
-# 六、读取实例模板
+# 七、读取实例模板
 
 实例模板，就是miot-spec预先定义的设备实例。从 www.miot-spec.org 使用标准HTTP/GET可以读取实例定义：
 
@@ -1342,9 +1373,13 @@ http://miot-spec.org/miot-spec-v2/templates
 
 http://miot-spec.org/miot-spec-v2/template?type=urn:miot-spec-v2:device-template:outlet:00000001
 
+### 3. 根据Short UUID读取某个模板的详细定义，与2等价。
+
+http://miot-spec.org/miot-spec-v2/template?uuid=0000C801
 
 
-# 七、读取实例定义
+
+# 八、读取实例定义
 
 设备实例，就是设备厂家遵循规范定义创建了具体设备的的实例定义。从 www.miot-spec.org 使用标准HTTP/GET可以读取实例定义：
 
@@ -1358,7 +1393,7 @@ http://miot-spec.org/miot-spec-v2/instance?type=urn:miot-spec-v2:device:outlet:0
 
 
 
-# 八、Q&A
+# 九、Q&A
 
 ## 1. MIOT-SPEC由谁定义？
 由米家开放平台定义。
