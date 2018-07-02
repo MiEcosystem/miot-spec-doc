@@ -1288,7 +1288,7 @@ urn:miot-spec-v2:device:fan:0000A005:zhimi-zxc:3
 
 小米定义了很多Property、Action、Event、Service、Device。从www.miot-spec.org 使用标准HTTP/GET请求可以读取规范定义。
 
-###1. 读取Type列表
+## 1. 读取Type列表
 
 * 读取所有的PropertyType
 
@@ -1310,7 +1310,7 @@ urn:miot-spec-v2:device:fan:0000A005:zhimi-zxc:3
 
   http://miot-spec.org/miot-spec-v2/spec/devices
 
-###2. 读取具体Type定义
+## 2. 读取具体Type定义
 
 * 读取一个PropertyType的具体定义
 
@@ -1338,7 +1338,7 @@ urn:miot-spec-v2:device:fan:0000A005:zhimi-zxc:3
 
 http://miot-spec.org/miot-spec-v2/templates
 
-### 2. 读取某个实例的详细定义
+## 2. 读取某个实例的详细定义
 
 http://miot-spec.org/miot-spec-v2/template?type=urn:miot-spec-v2:device-template:outlet:00000001
 
@@ -1352,7 +1352,7 @@ http://miot-spec.org/miot-spec-v2/template?type=urn:miot-spec-v2:device-template
 
 http://miot-spec.org/miot-spec-v2/instances
 
-###2. 读取某个实例的详细定义
+## 2. 读取某个实例的详细定义
 
 http://miot-spec.org/miot-spec-v2/instance?type=urn:miot-spec-v2:device:outlet:0000A002:lumi-v1:1
 
