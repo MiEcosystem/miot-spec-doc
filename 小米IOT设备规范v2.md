@@ -8,6 +8,7 @@
 | -------- | --------------- | -------------------------- |
 | 2018.3.1 | ouyangchengfeng | 在v1的基础上，初始化v2文档 |
 | 2018.3.6 | ouyangchengfeng | 增加章节：升级             |
+| 2018.7.2 | ouyangchengfeng | 增加章节：读取实例模板     |
 
 
 
@@ -1329,7 +1330,21 @@ urn:miot-spec-v2:device:fan:0000A005:zhimi-zxc:3
 
 
 
-# 六、读取实例定义
+# 六、读取实例模板
+
+实例模板，就是miot-spec预先定义的设备实例。从 www.miot-spec.org 使用标准HTTP/GET可以读取实例定义：
+
+## 1. 读取所有设备实例列表
+
+http://miot-spec.org/miot-spec-v2/templates
+
+### 2. 读取某个实例的详细定义
+
+http://miot-spec.org/miot-spec-v2/template?type=urn:miot-spec-v2:device-template:outlet:00000001
+
+
+
+# 七、读取实例定义
 
 设备实例，就是设备厂家遵循规范定义创建了具体设备的的实例定义。从 www.miot-spec.org 使用标准HTTP/GET可以读取实例定义：
 
@@ -1343,7 +1358,7 @@ http://miot-spec.org/miot-spec-v2/instance?type=urn:miot-spec-v2:device:outlet:0
 
 
 
-# 七、Q&A
+# 八、Q&A
 
 ## 1. MIOT-SPEC由谁定义？
 由米家开放平台定义。
