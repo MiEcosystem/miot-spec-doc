@@ -455,7 +455,7 @@
 
 * 设备变化时，需要第三方云主动发出推送给MIOT
 
-    地址是：http://api.home.mi.com/api/notify
+    地址是：https://api.home.mi.com/api/xiot/notify
 
     请求（第三方云 -> MIOT）
     ```json
