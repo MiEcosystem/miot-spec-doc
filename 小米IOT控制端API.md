@@ -775,3 +775,13 @@ Content-Length: 346
         ]
     }
     ```
+
+
+## 六. 国际化
+目前openhome服务的国际化分为：
+* 美西服务器：https://us.api.home.mi.com
+* 新加坡服务器：https://sg.api.home.mi.com
+* 欧洲服务器：https://de.api.home.mi.com
+
+需要注意的是：这几个数据中心之间的数据是隔离的，即从美西拉取的设备，后续的设备控制只能发往美西服务器。
+
