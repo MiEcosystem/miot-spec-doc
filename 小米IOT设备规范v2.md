@@ -784,10 +784,10 @@ Example 2.4.1
   当format为整型或浮点型，可定义unit值：
 
 | 值         | 描述                 |
-| ---------- | -------------------- |
+| ---------- | --------------------|
 | percentage | 百分比               |
 | celsius    | 摄氏度               |
-| senconds   | 秒                   |
+| seconds    | 秒                  |
 | minutes    | 分                   |
 | hours      | 小时                 |
 | days       | 天                   |
