@@ -934,7 +934,7 @@ urn:miot-spec-v2:device:air-conditioner:0000A004:aux-v1:1
 urn:miot-spec-v2:device:outlet:0000A002:chuangmi-hmi205:1
 urn:miot-spec-v2:device:outlet:0000A002:chuangmi-m1:1
 urn:miot-spec-v2:device:outlet:0000A002:chuangmi-v3:1
-urn:miot-spec-v2:device:cooker:0000A00B:chunmi-normal2:
+urn:miot-spec-v2:device:cooker:0000A00B:chunmi-normal2:1
 ```
 
 厂家创建一个设备时，必须实现：
