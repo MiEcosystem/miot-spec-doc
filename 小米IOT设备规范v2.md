@@ -236,7 +236,7 @@ urn:miot-spec-v2:service:device-information:00007801
 
   * namespace
 
-    如果是小米定义的规范为miot-spec，蓝牙联盟定义的规范为bluetooth-spec。
+    如果是小米定义的规范为miot-spec-v2，蓝牙联盟定义的规范为bluetooth-spec。
 
   * type
 
