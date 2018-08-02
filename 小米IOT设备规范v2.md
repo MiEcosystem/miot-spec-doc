@@ -392,9 +392,9 @@ urn:miot-spec-v2:service:device-information:00007801
 
    ```json
    "required-actions": [
-   	"urn:miot-spec-v2:action:get-stream-configuration:00000001",
-   	"urn:miot-spec-v2:action:start-stream:00000101",
-   	"urn:miot-spec-v2:action:stop-stream:00000201"
+       "urn:miot-spec-v2:action:get-stream-configuration:00000001",
+       "urn:miot-spec-v2:action:start-stream:00000101",
+       "urn:miot-spec-v2:action:stop-stream:00000201"
    ]
    ```
 
@@ -405,7 +405,7 @@ urn:miot-spec-v2:service:device-information:00007801
 
   ```json
   "optional-actions": [
-  	"urn:miot-spec-v2:action:identify:00002801"
+      "urn:miot-spec-v2:action:identify:00002801"
   ]
   ```
 
