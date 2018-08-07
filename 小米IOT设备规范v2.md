@@ -9,6 +9,7 @@
 | 2018.3.1 | ouyangchengfeng | 在v1的基础上，初始化v2文档 |
 | 2018.3.6 | ouyangchengfeng | 增加章节：升级             |
 | 2018.7.2 | ouyangchengfeng | 增加章节：读取实例模板     |
+| 2018.8.7 | ouyangchengfeng | 增加章节：其他约定        |
 
 
 
