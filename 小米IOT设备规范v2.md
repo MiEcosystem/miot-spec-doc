@@ -1392,8 +1392,12 @@ http://miot-spec.org/miot-spec-v2/instances
 http://miot-spec.org/miot-spec-v2/instance?type=urn:miot-spec-v2:device:outlet:0000A002:lumi-v1:1
 
 
+# 九、其他约定
 
-# 九、Q&A
+* 设备实例中的description可以让开发者从官方定义中选择一个，也可以自定义。
+* 设备实例中的第一个service，必须是device-information，iid必须是1。
+
+# 十、Q&A
 
 ## 1. MIOT-SPEC由谁定义？
 由米家开放平台定义。
