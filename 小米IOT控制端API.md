@@ -578,8 +578,8 @@ Content-Length: 346
 
 #### 5.1 Subscribe (订阅)
 订阅事件或属性时, 需要提供接收方信息:
-* receiver-url：接收方地址
-* custom-data：自定义数据，将会在推送通知时带回来
+* receiver-url：required，事件通知地址，需要调用方提供，用于接收将来的事件通知
+* custom-data：optional，自定义数据，它将附加到将来的事件通知上。调用方可以使用该字段存储有关本次订阅的相关信息
 
 ##### 订阅属性变化
 
@@ -673,6 +673,52 @@ Content-Length: 156
         }
         {
             "eid": "AAAD.1.1",
+            "status": -705202023
+        }
+    ]
+}
+```
+
+##### 订阅设备状态
+开始订阅：
+```http
+POST /api/v1/subscriptions
+Content-Type: application/json
+Content-Length: 134
+
+{
+    "topic": "devices-status-changed",
+    "devices": [
+        "AAAB",
+        "AAAC",
+        "AAAD",
+    ],
+    "custom-data": {
+        ...
+    },
+    "receiver-url": "xxx"
+}
+```
+
+订阅成功，返回如下应答：
+```http
+HTTP/1.1 207 Multi-Status
+Content-Type: application/json
+Content-Length: 156
+
+{
+    "expired": 36000,    // 超时时间，单位为秒。
+    "devices": [
+        {
+            "did": "AAAB",
+            "status": 0
+        },
+        {
+            "did": "AAAD",
+            "status": 0
+        }
+        {
+            "did": "AAAD",
             "status": -705202023
         }
     ]
@@ -774,14 +820,58 @@ Content-Length: 156
 }
 ```
 
+##### 取消订阅设备状态
+```http
+DELETE /api/v1/subscriptions
+Content-Type: application/json
+Content-Length: 134
+
+{
+    "topic": "devices-status-changed",
+    "devices": [
+        "AAAB",
+        "AAAC",
+        "AAAD",
+    ]
+}
+```
+
+取消订阅成功，返回如下应答：
+```http
+HTTP/1.1 200 OK
+```
+或
+```http
+HTTP/1.1 207 Multi-Status
+Content-Type: application/json
+Content-Length: 156
+
+{
+    "devices": [
+        {
+            "did": "AAAB",
+            "status": 0
+        },
+        {
+            "did": "AAAC",
+            "status": 0
+        },
+        {
+            "did": "AAAD",
+            "status": 0
+        }
+    ]
+}
+```
+
 #### 5.3 Event (事件)
 
-| 序号 | 事件主题           | 描述                                                       | 备注     |
-| ---- | ------------------ | ------------------------------------------------------- | -------- |
-| 0    | properties-changed | (设备描述中定义的)属性发生变化                               |          |
-| 1    | events-occured     | (设备描述中定义的)事件产生                                  |          |
-| 2    | devices-changed    | 设备发生变化（包括增加、删除设备，设备名称、种类被修改等）         | 暂不实现 |
-| 3    | homes-changed      | 家庭发生变化                                              | 暂不实现 |
+| 序号 | 事件主题                    | 描述                                          | 备注     |
+| ---- | ------------------------- | -------------------------------------------- | -------- |
+| 0    | properties-changed        | (设备描述中定义的)属性发生变化                     |          |
+| 1    | events-occured            | (设备描述中定义的)事件产生                        |          |
+| 2    | devices-status-changed    | 设备状态发生变化（包括设备上线离线等）               |         |
+| 3    | homes-changed             | 家庭发生变化                                    | 暂不实现 |
 
 ##### 属性发生变化
 
@@ -822,6 +912,24 @@ Content-Length: 156
         {
             "eid": "AAA1.3.3",
             "arguments": [344, "xxxx"]
+        }
+    ]
+}
+```
+
+##### 设备状态发生变化
+
+```json
+{
+    "topic": "devices-status-changed",
+    "oid": "xxxxxxxxxxxxx",
+    "custom-data": {
+        ...
+    },
+    "devices": [
+        {
+            "did": "AAA1",
+            "online": true
         }
     ]
 }
