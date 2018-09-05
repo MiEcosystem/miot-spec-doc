@@ -973,7 +973,9 @@ Content-Length: 156
 | 007      | 没找到设备云                          |
 | 008      | 无效的ID (无效的PID、SID、AID、EID等) |
 | 009      | Scene不存在                           |
+| 010      | Scene触发失败                         |
 | 011      | 设备离线                              |
+| 012      | Scene No Permit                       |
 | 013      | Property不可读                        |
 | 023      | Property不可写                        |
 | 033      | Property不可订阅                      |
