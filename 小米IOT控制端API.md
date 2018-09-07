@@ -65,35 +65,35 @@
 ### API分类
 
 1. 基本API
-    > * Get Devices (读取物理设备列表)
+    > * [Get Devices (读取物理设备列表)](#11-get-devices-读取设备列表)
     >   https://api.home.mi.com/api/v1/devices
     > * Get Services (读取服务列表)
     >   https://api.home.mi.com/api/v1/services
-    > * Get Properties (读取属性)
+    > * [Get Properties (读取属性)](#12-get-properties-读取属性)
     >   https://api.home.mi.com/api/v1/properties
-    > * Set Properties (设置属性)
+    > * [Set Properties (设置属性)](#14-set-properties-设置属性)
     >   https://api.home.mi.com/api/v1/properties
-    > * Invoke Actions (调用方法)
+    > * [Invoke Actions (调用方法)](#15-invoke-actions-调用方法)
     >   https://api.home.mi.com/api/v1/action
 
 2. 场景API
-    > * Get Scenes (读取场景列表)
+    > * [Get Scenes (读取场景列表)](#21-get-scenes-读取场景列表)
     >   https://api.home.mi.com/api/v1/scenes
-    > * Trigger Scene (触发一个场景)
+    > * [Trigger Scene (触发一个场景)](#22-trigger-scene-触发一个场景)
     >   https://api.home.mi.com/api/v1/scene
 
 3. 家庭API
-    > * Get Homes (读取家庭列表)
+    > * [Get Homes (读取家庭列表)](#31-get-homes-读取家庭列表)
     >   https://api.home.mi.com/api/v1/homes
 
 4. 设备信息API
-    > * Get DeviceInformation (读取设备信息)
+    > * [Get DeviceInformation (读取设备信息)](#41-get-deviceinformation-读取设备信息)
     >   https://api.home.mi.com/api/v1/device-information
 
 5. 事件API
-    > * Subscribe (订阅)
+    > * [Subscribe (订阅)](#51-subscribe-订阅)
     >   https://api.home.mi.com/api/v1/subscriptions
-    > * Unsubscribe (取消订阅)
+    > * [Unsubscribe (取消订阅)](#52-unsubscribe-取消订阅)
     >   https://api.home.mi.com/api/v1/subscriptions
 
 ### 注意事项
@@ -372,7 +372,7 @@ Content-Length: 234
 
 {
     "aid": "AAAB.1.2",
-    "in": [17, "Shanghai"]
+    "in": ["GuangDongSheng", "ShenZhenShi"]
 }
 ```
 
@@ -385,7 +385,7 @@ Content-Length: 453
 
 {
     "oid": "xxxxxxxxxxxxx",
-    "out": [17, "Beijing"]
+    "out": ["晴","23°"]
 }
 ```
 
